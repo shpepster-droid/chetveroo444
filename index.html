@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="theme-color" content="#080808">
+<title>ЧЕТВЕРО</title>
+
+<style>
+:root{
+  --bg:#070707;
+  --panel:#101010;
+  --panel2:#161616;
+  --red:#b00020;
+  --red2:#ff1738;
+  --red3:#50000d;
+  --text:#f4f4f4;
+  --muted:#777;
+  --border:#292020;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;min-height:100%;overscroll-behavior:none}
+body{overflow-x:hidden}
+button,input,textarea{font:inherit}
+button{cursor:pointer;color:inherit}
+button:active{transform:scale(.97)}
+button,input,textarea{outline:none}
+.hidden{display:none!important}
+
+body:before{
+ content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+ background:
+ radial-gradient(ellipse at 50% -10%,rgba(120,0,20,.25),transparent 55%),
+ radial-gradient(ellipse at 100% 100%,rgba(80,0,10,.15),transparent 50%);
+}
+body:after{
+ content:"";position:fixed;inset:0;pointer-events:none;z-index:99;opacity:.04;
+ background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.5'/%3E%3C/svg%3E");
+}
+#app{position:relative;z-index:1;max-width:600px;margin:auto;min-height:100dvh;padding-bottom:90px}
+header{display:flex;align-items:center;justify-content:space-between;padding:18px 20px}
+.brand{font-weight:900;letter-spacing:5px;font-size:22px;text-shadow:0 0 20px #b0002055;animation:brandPulse 4s infinite}
+.brand span{color:var(--red2)}
+@keyframes brandPulse{0%,100%{text-shadow:0 0 8px #b0002044}50%{text-shadow:0 0 24px #ff173866}}
+.avatar{width:42px;height:42px;border-radius:50%;object-fit:cover;background:#191919;border:1px solid #4a1018;display:flex;align-items:center;justify-content:center;font-weight:bold}
+.avatarButton{border:0;background:none;padding:0}
+.screen{display:none;padding:12px 18px 25px;animation:screenIn .38s cubic-bezier(.2,.8,.2,1)}
+.screen.active{display:block}
+.screen.leaving{animation:screenOut .18s forwards}
+@keyframes screenIn{from{opacity:0;transform:translateY(18px);filter:blur(4px)}to{opacity:1;transform:none;filter:none}}
+@keyframes screenOut{to{opacity:0;transform:translateY(-8px)}}
+
+h1,h2,h3,p{margin-top:0}
+h1{font-size:28px;letter-spacing:-.8px}
+h2{font-size:21px}
+.subtitle{color:var(--muted);font-size:13px}
+.sectionTitle{font-size:11px;color:#777;letter-spacing:3px;text-transform:uppercase;margin:24px 0 12px}
+.card{background:linear-gradient(145deg,#151515,#0d0d0d);border:1px solid var(--border);border-radius:18px;padding:17px;margin-bottom:12px;box-shadow:0 10px 35px #0004;transition:.25s}
+.card:active{border-color:#6b1524}
+.hero{padding:30px 20px;text-align:center;border:1px solid #351018;border-radius:22px;background:radial-gradient(ellipse at center,#25070d,#0a0a0a 70%);position:relative;overflow:hidden}
+.hero:before{content:"";position:absolute;inset:-60%;background:linear-gradient(120deg,transparent 40%,#ff173811 50%,transparent 60%);animation:sweep 7s infinite}
+@keyframes sweep{from{transform:translateX(-30%)}to{transform:translateX(30%)}}
+.heroLogo{font-size:44px;letter-spacing:8px;font-weight:900;color:#eee;text-shadow:0 0 20px #a00024,2px 0 #ff1738;animation:glitch 5s infinite}
+@keyframes glitch{0%,94%,100%{transform:none}95%{transform:translateX(2px);text-shadow:-2px 0 red}96%{transform:translateX(-2px)}97%{transform:none}}
+.btn{width:100%;border:1px solid #48111b;border-radius:13px;padding:15px;background:#151515;margin:6px 0;text-align:center;font-weight:700;transition:.2s}
+.btn.primary{background:linear-gradient(135deg,#8b001b,#bd092b);border-color:#e21b3d;box-shadow:0 0 22px #8b001b33}
+.btn.secondary{background:#111}
+.btn.danger{border-color:#6e0015;color:#ff536b}
+.btn.small{width:auto;padding:9px 13px;font-size:12px}
+.row{display:flex;gap:9px;align-items:center}
+.row>*{min-width:0}
+.row .btn{flex:1}
+input,textarea,select{width:100%;background:#090909;color:#fff;border:1px solid #332126;border-radius:12px;padding:13px;margin:5px 0}
+textarea{resize:vertical;min-height:80px}
+label{font-size:12px;color:#999;display:block;margin:12px 0 4px}
+.tileGrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.tile{background:#111;border:1px solid #2b2022;border-radius:16px;padding:18px 12px;min-height:100px;text-align:left;transition:.25s}
+.tile:active,.tile:hover{border-color:#a50024;box-shadow:0 0 18px #a0002022}
+.tile .emoji{font-size:25px;display:block;margin-bottom:12px}
+.tile strong{display:block;font-size:14px}
+.tile small{color:#777;font-size:11px}
+.bottomNav{position:fixed;bottom:0;left:0;right:0;z-index:50;background:#080808ed;backdrop-filter:blur(18px);border-top:1px solid #261317;padding:9px 5px calc(9px + env(safe-area-inset-bottom));display:flex;justify-content:space-around;max-width:600px;margin:auto}
+.navBtn{background:none;border:0;color:#666;font-size:10px;display:flex;flex-direction:column;gap:4px;align-items:center;min-width:50px}
+.navBtn span{font-size:20px}
+.navBtn.active{color:#ff2344;text-shadow:0 0 10px #a00020}
+.badge{display:inline-block;padding:5px 9px;background:#260810;border:1px solid #50111e;border-radius:20px;font-size:10px;color:#ff536b}
+.listItem{display:flex;align-items:center;gap:12px;padding:13px 0;border-bottom:1px solid #211a1b}
+.listItem:last-child{border-bottom:0}
+.listItem .info{flex:1}
+.listItem small{display:block;color:#777;margin-top:4px}
+.onlineDot{width:7px;height:7px;background:#a80025;border-radius:50%;display:inline-block}
+.message{max-width:85%;background:#171717;border:1px solid #292020;padding:11px 13px;border-radius:14px;margin:9px 0;overflow-wrap:anywhere}
+.message.mine{margin-left:auto;background:#350812;border-color:#5b1524}
+.message small{display:block;color:#888;font-size:10px;margin-bottom:5px}
+.message img,.message video{max-width:100%;border-radius:10px;margin-top:7px}
+.chatComposer{display:flex;gap:7px;align-items:center;position:sticky;bottom:80px;background:#090909;padding:8px 0}
+.chatComposer input{margin:0;flex:1}
+.iconBtn{background:#171717;border:1px solid #332126;border-radius:12px;padding:11px}
+.questionBox{border:1px solid #4b101c;background:radial-gradient(ellipse at top,#27070d,#0c0c0c 70%);padding:24px;border-radius:20px;margin:18px 0;text-align:center}
+.questionBox p{font-size:22px;line-height:1.4;font-weight:700}
+.playerPill{display:inline-block;padding:9px 13px;background:#171717;border:1px solid #332126;border-radius:30px;margin:4px;font-size:12px}
+.progress{height:4px;background:#222;border-radius:10px;overflow:hidden;margin:15px 0}
+.progress div{height:100%;background:#c0002a;transition:width .3s}
+hr{border:0;border-top:1px solid #251b1d;margin:18px 0}
+.toast{position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#290811;border:1px solid #8d1730;border-radius:12px;padding:12px 17px;z-index:200;animation:screenIn .3s}
+.modal{position:fixed;inset:0;background:#000b;z-index:150;display:flex;align-items:center;justify-content:center;padding:20px}
+.modalBox{width:100%;max-width:420px;background:#111;border:1px solid #4a101a;border-radius:20px;padding:22px;max-height:85vh;overflow:auto}
+#chatMessages{max-height:52vh;overflow:auto;padding-bottom:10px}
+@media(min-width:500px){.heroLogo{font-size:55px}}
+</style>
+</head>
+
+<body>
+<div id="app">
+<header>
+  <div class="brand">ЧЕТ<span>В</span>ЕРО</div>
+  <button class="avatarButton" onclick="openProfile()"><img id="headerAvatar" class="avatar" alt="Профиль"></button>
+</header>
+
+<section id="home" class="screen active">
+  <div class="hero">
+    <div class="heroLogo">ЧЕТВЕРО</div>
+    <p class="subtitle">Игра, после которой вы узнаете друг друга</p>
+    <span class="badge">4 игрока · без правил приличия</span>
+  </div>
+  <div class="sectionTitle">Начать</div>
+  <button class="btn primary" onclick="createRoom()">＋ Создать комнату</button>
+  <div class="row">
+    <input id="joinCode" placeholder="Код комнаты">
+    <button class="btn small" onclick="joinRoom()">Войти</button>
+  </div>
+  <div class="sectionTitle">Твои комнаты</div>
+  <div id="roomList"></div>
+  <div class="tileGrid">
+    <button class="tile" onclick="navigate('friends')"><span class="emoji">♟</span><strong>Друзья</strong><small>Твоя компания</small></button>
+    <button class="tile" onclick="navigate('chats')"><span class="emoji">☏</span><strong>Сообщения</strong><small>Личные переписки</small></button>
+    <button class="tile" onclick="navigate('profile')"><span class="emoji">◉</span><strong>Профиль</strong><small>Настройки и статистика</small></button>
+    <button class="tile" onclick="navigate('rules')"><span class="emoji">☷</span><strong>Правила</strong><small>Как играть</small></button>
+  </div>
+</section>
+
+<section id="roomScreen" class="screen">
+  <button class="btn small" onclick="navigate('home')">← Назад</button>
+  <h1 id="roomTitle">Комната</h1>
+  <p class="subtitle">Код для приглашения</p>
+  <div class="hero"><h1 id="roomCodeDisplay">----</h1><button class="btn small" onclick="copyRoomCode()">Копировать код</button></div>
+  <div class="sectionTitle">Игроки</div>
+  <div id="roomPlayers"></div>
+  <button class="btn" onclick="addLocalPlayer()">＋ Добавить тестового игрока</button>
+  <button class="btn primary" onclick="openGameSettings()">Настроить игру</button>
+  <button class="btn danger" onclick="deleteRoom()">Удалить комнату</button>
+</section>
+
+<section id="settingsScreen" class="screen">
+  <button class="btn small" onclick="navigate('roomScreen')">← Комната</button>
+  <h1>Настройки игры</h1>
+  <label>Количество раундов</label><input type="number" id="roundCount" min="1" max="30" value="5">
+  <label>Сложность</label>
+  <select id="difficulty"><option>Лёгкая</option><option selected>Средняя</option><option>Жёсткая</option></select>
+  <label>Режим голосования</label>
+  <select id="voteMode"><option>Все, кроме отвечающего</option><option>Выбранный судья</option><option>Анонимное голосование</option></select>
+  <label>Категории (выбери максимум 5)</label>
+  <div id="categoryOptions"></div>
+  <button class="btn primary" onclick="startGame()">Начать игру</button>
+</section>
+
+<section id="gameScreen" class="screen">
+  <div class="row"><button class="btn small" onclick="navigate('roomScreen')">Комната</button><span id="roundLabel" class="badge"></span></div>
+  <div class="progress"><div id="roundProgress" style="width:0%"></div></div>
+  <div id="turnPlayer" class="subtitle"></div>
+  <div class="questionBox"><span id="questionCategory" class="badge"></span><p id="questionText"></p></div>
+  <label>Твой ответ</label>
+  <textarea id="answerInput" placeholder="Напиши ответ..."></textarea>
+  <div class="row">
+    <button class="btn" onclick="skipQuestion()">Пропустить −1</button>
+    <button class="btn primary" onclick="submitAnswer()">Я ответил</button>
+  </div>
+  <button class="btn small" onclick="openGameChat()">Открыть игровой чат</button>
+</section>
+
+<section id="voteScreen" class="screen">
+  <h1>Голосование</h1>
+  <p class="subtitle" id="voteSubtitle">Оцените ответ</p>
+  <div id="voteOptions"></div>
+  <button class="btn primary" onclick="finishVote()">Подтвердить голос</button>
+</section>
+
+<section id="scoreScreen" class="screen">
+  <h1>Таблица очков</h1><div id="scoreTable"></div>
+  <button class="btn primary" onclick="nextRound()">Следующий раунд</button>
+  <button class="btn" onclick="endGame()">Завершить игру</button>
+</section>
+
+<section id="finishScreen" class="screen">
+  <div class="hero"><div class="heroLogo">ФИНАЛ</div><p>Игра завершена</p></div>
+  <div id="finalScores"></div>
+  <button class="btn primary" onclick="navigate('roomScreen')">Вернуться в комнату</button>
+  <button class="btn" onclick="startGame()">Реванш</button>
+  <button class="btn" onclick="navigate('home')">На главную</button>
+</section>
+
+<section id="friends" class="screen">
+  <h1>Друзья</h1>
+  <div class="row"><input id="friendName" placeholder="Имя друга"><button class="btn small" onclick="addFriend()">Добавить</button></div>
+  <div id="friendsList"></div>
+</section>
+
+<section id="chats" class="screen">
+  <h1>Сообщения</h1>
+  <div id="chatList"></div>
+  <button class="btn" onclick="openGameChat()">Игровой чат</button>
+</section>
+
+<section id="chatScreen" class="screen">
+  <button class="btn small" onclick="navigate('chats')">← Чаты</button>
+  <h2 id="chatTitle">Чат</h2>
+  <div id="chatMessages"></div>
+  <div class="chatComposer">
+    <button class="iconBtn" onclick="chooseAttachment()">＋</button>
+    <input id="messageInput" placeholder="Сообщение..." onkeydown="if(event.key==='Enter')sendMessage()">
+    <button class="iconBtn" onclick="startVoice()">🎙</button>
+    <button class="iconBtn" onclick="sendMessage()">➤</button>
+  </div>
+  <input id="attachmentInput" type="file" accept="image/*,video/*,audio/*,.pdf,.txt" multiple hidden onchange="handleAttachments(event)">
+  <div id="replyInfo" class="subtitle"></div>
+</section>
+
+<section id="profile" class="screen">
+  <h1>Профиль</h1>
+  <div class="hero">
+    <img id="profileAvatar" class="avatar" style="width:90px;height:90px;margin:auto" alt="Фото профиля">
+    <input id="profileName" placeholder="Твой ник">
+    <label>Фото профиля</label>
+    <input type="file" accept="image/*" onchange="changeAvatar(event)">
+    <button class="btn primary" onclick="saveProfile()">Сохранить профиль</button>
+  </div>
+  <div class="sectionTitle">Статистика</div><div id="stats"></div>
+</section>
+
+<section id="rules" class="screen">
+  <h1>Правила</h1>
+  <div class="card">
+    <p>1. Игрок получает вопрос и отвечает в чате.</p>
+    <p>2. После ответа нажимает «Я ответил».</p>
+    <p>3. Остальные голосуют.</p>
+    <p>4. Очки начисляются за участие и голосование.</p>
+    <p>5. Пропуск вопроса стоит 1 очко.</p>
+    <p>6. Уважайте границы участников. Любой игрок может отказаться от вопроса.</p>
+  </div>
+</section>
+
+<nav class="bottomNav">
+  <button class="navBtn active" data-nav="home" onclick="navigate('home')"><span>⌂</span>Главная</button>
+  <button class="navBtn" data-nav="friends" onclick="navigate('friends')"><span>♟</span>Друзья</button>
+  <button class="navBtn" data-nav="chats" onclick="navigate('chats')"><span>☏</span>Чаты</button>
+  <button class="navBtn" data-nav="profile" onclick="navigate('profile')"><span>◉</span>Профиль</button>
+</nav>
+</div>
+
+<div id="modal" class="modal hidden"><div class="modalBox" id="modalContent"></div></div>
+
+<script>
+const $=id=>document.getElementById(id);
+const screens=[...document.querySelectorAll('.screen')];
+const categories=['18+ и интим','Отношения','Бывшие','Секреты','Провокации','Дружба','Алкоголь и вечеринки','Неловкие ситуации','Гипотетические ситуации','Чёрный юмор','Деньги и амбиции','Детство'];
+const questions={
+'18+ и интим':['Какой самый необычный флирт ты получал?','Что для тебя абсолютно неприемлемо в интиме?','Какую фантазию ты никогда не рассказывал?'],
+'Отношения':['Ты когда-нибудь возвращался к бывшей?','Что ты скрывал от партнёра?','Что важнее: страсть или спокойствие?'],
+'Бывшие':['Кому из бывших ты бы написал сегодня?','Ты следил за бывшей после расставания?','О ком вспоминаешь чаще всего?'],
+'Секреты':['Какой секрет ты никому здесь не рассказывал?','За что тебе до сих пор стыдно?','Какую ложь ты не раскрыл?'],
+'Провокации':['Кто здесь чаще всех врёт?','Кому из компании ты доверяешь меньше?','Кто изменится первым после больших денег?'],
+'Дружба':['Кто из компании вытащит тебя из беды?','Кого ты знаешь хуже остальных?','Кто из вас самый надёжный?'],
+'Алкоголь и вечеринки':['Какой самый безумный поступок был после алкоголя?','Что ты натворил на вечеринке?','Кто здесь хуже всех держит себя в руках?'],
+'Неловкие ситуации':['Какой момент хочется стереть из памяти?','Когда ты позорно пытался впечатлить кого-то?','Что самое странное ты делал на людях?'],
+'Гипотетические ситуации':['Кого спасёшь первым из компании?','Если можно стереть один поступок — какой?','Что сделал бы за миллион без последствий?'],
+'Чёрный юмор':['Какая мысль показалась тебе слишком жестокой?','Над чем смеяться нельзя, но ты смеялся?','Какой самый мрачный юмор тебе нравится?'],
+'Деньги и амбиции':['Сколько денег тебе нужно для счастья?','Кому из друзей ты одолжишь крупную сумму?','Чем ты готов пожертвовать ради успеха?'],
+'Детство':['Какой поступок из детства скрывали родители?','Какое наказание было самым жёстким?','Что ты делал, пока никто не видел?']
+};
+
+let data=load();
+let currentRoom=null,currentChat='Общий чат',game=null,selectedVote=null,replyTo=null,mediaRecorder=null,recordingChunks=[];
+function load(){try{return JSON.parse(localStorage.getItem('chetvero_v2'))||{name:'Игрок',avatar:'',rooms:[],friends:[],messages:{},stats:{games:0,points:0}}}catch(e){return {name:'Игрок',avatar:'',rooms:[],friends:[],messages:{},stats:{games:0,points:0}}}}
+function save(){localStorage.setItem('chetvero_v2',JSON.stringify(data))}
+function toast(t){let x=document.createElement('div');x.className='toast';x.textContent=t;document.body.append(x);setTimeout(()=>x.remove(),2300)}
+function navigate(id){
+ let old=document.querySelector('.screen.active');if(old&&old.id!==id){old.classList.add('leaving');setTimeout(()=>old.classList.remove('active','leaving'),180)}
+ screens.forEach(s=>{if(s.id===id){setTimeout(()=>s.classList.add('active'),old&&old.id!==id?120:0)}});
+ document.querySelectorAll('.navBtn').forEach(b=>b.classList.toggle('active',b.dataset.nav===id));
+ if(id==='home')renderRooms();if(id==='friends')renderFriends();if(id==='chats')renderChats();if(id==='profile')renderProfile();
+}
+function createRoom(){let r={id:Math.random().toString(36).slice(2,8).toUpperCase(),name:'Комната '+(data.rooms.length+1),players:[data.name],scores:{[data.name]:0}};data.rooms.unshift(r);currentRoom=r;save();renderRoom();navigate('roomScreen')}
+function joinRoom(){let code=$('joinCode').value.trim().toUpperCase();let r=data.rooms.find(x=>x.id===code);if(!r)return toast('Комната не найдена в этом браузере');currentRoom=r;renderRoom();navigate('roomScreen')}
+function renderRooms(){$('roomList').innerHTML=data.rooms.map(r=>`<div class="card" onclick="currentRoom=data.rooms.find(x=>x.id==='${r.id}');renderRoom();navigate('roomScreen')"><b>${esc(r.name)}</b><small style="float:right;color:#777">${r.id}</small><p class="subtitle">${r.players.length} игроков</p></div>`).join('')||'<p class="subtitle">Комнат пока нет</p>'}
+function renderRoom(){if(!currentRoom)return;$('roomTitle').textContent=currentRoom.name;$('roomCodeDisplay').textContent=currentRoom.id;$('roomPlayers').innerHTML=currentRoom.players.map(p=>`<div class="listItem"><div class="avatar">${esc(p[0]||'?')}</div><div class="info">${esc(p)}<small>Игрок</small></div><span class="onlineDot"></span></div>`).join('')}
+function copyRoomCode(){navigator.clipboard?.writeText(currentRoom.id).then(()=>toast('Код скопирован')).catch(()=>toast(currentRoom.id))}
+function addLocalPlayer(){let n=prompt('Имя тестового игрока');if(n){currentRoom.players.push(n);currentRoom.scores[n]=0;save();renderRoom()}}
+function deleteRoom(){if(!currentRoom)return;data.rooms=data.rooms.filter(r=>r.id!==currentRoom.id);currentRoom=null;save();navigate('home')}
+function openGameSettings(){categories.forEach(c=>{});$('categoryOptions').innerHTML=categories.map(c=>`<label><input type="checkbox" value="${esc(c)}" class="catCheck" checked style="width:auto"> ${esc(c)}</label>`).join('');navigate('settingsScreen')}
+function startGame(){
+ if(!currentRoom)return toast('Сначала создай комнату');
+ let cats=[...document.querySelectorAll('.catCheck:checked')].map(x=>x.value);if(!cats.length)return toast('Выбери хотя бы одну категорию');cats=cats.slice(0,5);
+ game={round:1,total:Math.max(1,Math.min(30,+$('roundCount').value||5)),difficulty:$('difficulty').value,voteMode:$('voteMode').value,cats,turn:0,used:[],scores:{...currentRoom.scores},answers:[]};data.stats.games++;save();showQuestion();navigate('gameScreen')
+}
+function showQuestion(){let p=currentRoom.players[game.turn%currentRoom.players.length];let cat=game.cats[Math.floor(Math.random()*game.cats.length)];let pool=questions[cat]||['Расскажи что-нибудь неожиданное о себе'];let q=pool.filter(x=>!game.used.includes(x));if(!q.length){game.used=[];q=pool}let question=q[Math.floor(Math.random()*q.length)];game.used.push(question);game.current={player:p,cat,question};$('roundLabel').textContent=`Раунд ${game.round}/${game.total}`;$('roundProgress').firstElementChild;$('roundProgress').style.width=(game.round/game.total*100)+'%';$('turnPlayer').textContent='Отвечает: '+p;$('questionCategory').textContent=cat;$('questionText').textContent=question;$('answerInput').value=''}
+function submitAnswer(){if(!$('answerInput').value.trim())return toast('Напиши ответ');game.answers.push({player:game.current.player,question:game.current.question,answer:$('answerInput').value});game.scores[game.current.player]=(game.scores[game.current.player]||0)+1;data.stats.points++;save();renderVote();navigate('voteScreen')}
+function skipQuestion(){game.scores[game.current.player]=(game.scores[game.current.player]||0)-1;save();advanceTurn()}
+function renderVote(){selectedVote=null;$('voteSubtitle').textContent=`Оцените ответ игрока ${game.current.player}`;$('voteOptions').innerHTML=currentRoom.players.filter(p=>p!==game.current.player).map(p=>`<button class="btn" onclick="selectedVote='${esc(p)}';document.querySelectorAll('#voteOptions button').forEach(b=>b.classList.remove('primary'));this.classList.add('primary')">${esc(p)}</button>`).join('')}
+function finishVote(){if(!selectedVote)return toast('Выбери голос');game.scores[selectedVote]=(game.scores[selectedVote]||0)+1;save();renderScores();navigate('scoreScreen')}
+function renderScores(){let sorted=Object.entries(game.scores).sort((a,b)=>b[1]-a[1]);$('scoreTable').innerHTML=sorted.map(([p,s],i)=>`<div class="listItem"><div class="info">${i+1}. ${esc(p)}</div><b>${s} очков</b></div>`).join('')}
+function advanceTurn(){game.turn++;game.round++;if(game.round>game.total){endGame();return}showQuestion();navigate('gameScreen')}
+function nextRound(){advanceTurn()}
+function endGame(){if(!game)return;currentRoom.scores=game.scores;save();$('finalScores').innerHTML=Object.entries(game.scores).sort((a,b)=>b[1]-a[1]).map(([p,s],i)=>`<div class="card">${i===0?'🏆 ':''}${esc(p)} — ${s} очков</div>`).join('');navigate('finishScreen')}
+function addFriend(){let n=$('friendName').value.trim();if(!n)return;if(!data.friends.includes(n))data.friends.push(n);$('friendName').value='';save();renderFriends()}
+function renderFriends(){$('friendsList').innerHTML=data.friends.map(n=>`<div class="listItem"><div class="avatar">${esc(n[0])}</div><div class="info">${esc(n)}<small>Локальный контакт</small></div><button class="btn small" onclick="openChat('${esc(n)}')">Написать</button><button class="btn small danger" onclick="removeFriend('${esc(n)}')">×</button></div>`).join('')||'<p class="subtitle">Добавь друзей по имени</p>'}
+function removeFriend(n){data.friends=data.friends.filter(x=>x!==n);save();renderFriends()}
+function renderChats(){$('chatList').innerHTML=['Общий чат',...data.friends].map(n=>`<div class="listItem" onclick="openChat('${esc(n)}')"><div class="avatar">☏</div><div class="info">${esc(n)}<small>Открыть переписку</small></div></div>`).join('')}
+function openChat(n){currentChat=n;$('chatTitle').textContent=n;renderMessages();navigate('chatScreen')}
+function openGameChat(){openChat('Игровой чат')}
+function renderMessages(){let msgs=data.messages[currentChat]||[];$('chatMessages').innerHTML=msgs.map((m,i)=>`<div class="message ${m.mine?'mine':''}" onclick="replyMessage(${i})"><small>${esc(m.name)} ${m.reply?'↪ '+esc(m.reply):''}</small>${esc(m.text||'')}${m.file?renderFile(m.file):''}<div style="font-size:10px;color:#666;margin-top:6px">Нажми, чтобы ответить</div></div>`).join('');$('chatMessages').scrollTop=$('chatMessages').scrollHeight}
+function renderFile(f){if(f.type.startsWith('image/'))return `<img src="${f.url}">`;if(f.type.startsWith('video/'))return `<video controls src="${f.url}"></video>`;if(f.type.startsWith('audio/'))return `<audio controls src="${f.url}"></audio>`;return `<a href="${f.url}" download="${esc(f.name)}">${esc(f.name)}</a>`}
+function sendMessage(){let t=$('messageInput').value.trim();if(!t)return;let a=data.messages[currentChat]||(data.messages[currentChat]=[]);a.push({name:data.name,text:t,mine:true,reply:replyTo});replyTo=null;$('replyInfo').textContent='';$('messageInput').value='';save();renderMessages()}
+function replyMessage(i){let m=(data.messages[currentChat]||[])[i];replyTo=(m.name+': '+(m.text||m.file?.name||'вложение')).slice(0,100);$('replyInfo').textContent='Ответ на: '+replyTo}
+function chooseAttachment(){$('attachmentInput').click()}
+function handleAttachments(e){let files=[...e.target.files];files.forEach(f=>{if(f.size>8*1024*1024)return toast('Файл больше 8 МБ');let reader=new FileReader();reader.onload=()=>{let a=data.messages[currentChat]||(data.messages[currentChat]=[]);a.push({name:data.name,mine:true,file:{name:f.name,type:f.type,url:reader.result}});try{save()}catch(err){toast('Не хватает места для сохранения файла')}renderMessages()};reader.readAsDataURL(f)});e.target.value=''}
+async function startVoice(){if(!navigator.mediaDevices?.getUserMedia||!window.MediaRecorder)return toast('Запись голосовых не поддерживается этим браузером');try{if(mediaRecorder&&mediaRecorder.state==='recording'){mediaRecorder.stop();return}let stream=await navigator.mediaDevices.getUserMedia({audio:true});mediaRecorder=new MediaRecorder(stream);recordingChunks=[];mediaRecorder.ondataavailable=e=>recordingChunks.push(e.data);mediaRecorder.onstop=()=>{let blob=new Blob(recordingChunks,{type:'audio/webm'});let reader=new FileReader();reader.onload=()=>{let a=data.messages[currentChat]||(data.messages[currentChat]=[]);a.push({name:data.name,mine:true,file:{name:'Голосовое сообщение',type:'audio/webm',url:reader.result}});try{save()}catch(e){toast('Не удалось сохранить запись')}renderMessages();stream.getTracks().forEach(t=>t.stop())};reader.readAsDataURL(blob)};mediaRecorder.start();toast('Запись идёт. Нажми 🎙 ещё раз, чтобы завершить')}catch(e){toast('Разреши доступ к микрофону')}}
+function openProfile(){navigate('profile')}
+function renderProfile(){$('profileName').value=data.name;$('profileAvatar').src=data.avatar||avatarFallback(data.name);$('headerAvatar').src=data.avatar||avatarFallback(data.name);$('stats').innerHTML=`<div class="card">Сыграно игр: ${data.stats.games}<br>Набрано очков: ${data.stats.points}</div>`}
+function avatarFallback(n){return 'data:image/svg+xml;charset=UTF-8,'+encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><rect width="100" height="100" fill="#210810"/><text x="50%" y="55%" font-size="45" text-anchor="middle" fill="#f4f4f4">${(n||'?')[0]}</text></svg>`)}
+function changeAvatar(e){let f=e.target.files[0];if(!f)return;if(f.size>2*1024*1024)return toast('Фото должно быть меньше 2 МБ');let r=new FileReader();r.onload=()=>{data.avatar=r.result;renderProfile()};r.readAsDataURL(f)}
+function saveProfile(){data.name=$('profileName').value.trim()||'Игрок';save();renderProfile();toast('Профиль сохранён')}
+function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+renderRooms();renderFriends();renderProfile();
+</script>
+</body>
+</html>
