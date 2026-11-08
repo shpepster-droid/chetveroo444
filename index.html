@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#080808">
+<title>ЧЕТВЕРО</title>
+
+<style>
+:root{
+  --bg:#080808;
+  --panel:#111;
+  --panel2:#171717;
+  --border:#292929;
+  --red:#e50925;
+  --red2:#ff243e;
+  --text:#f4f4f4;
+  --muted:#858585;
+  --green:#27c879;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;min-height:100%;overscroll-behavior:none}
+body{padding-bottom:calc(85px + env(safe-area-inset-bottom))}
+button,input,textarea,select{font:inherit}
+button{cursor:pointer;color:inherit}
+button:disabled{opacity:.35;cursor:not-allowed}
+#app{max-width:600px;margin:auto;min-height:100vh;position:relative}
+header{
+  height:64px;display:flex;align-items:center;justify-content:space-between;
+  padding:0 18px;border-bottom:1px solid #1b1b1b;background:#080808;
+  position:sticky;top:0;z-index:20
+}
+.brand{font-size:21px;font-weight:950;letter-spacing:3px}
+.brand span{color:var(--red)}
+.header-right{display:flex;align-items:center;gap:8px}
+.header-btn{border:1px solid var(--border);background:#151515;border-radius:12px;padding:9px 12px}
+#backBtn{display:none}
+main{padding:16px 16px 24px}
+.screen{display:none;animation:screenIn .22s ease}
+.screen.active{display:block}
+@keyframes screenIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+h1{font-size:28px;line-height:1.1;margin:8px 0 18px;font-weight:900}
+h2{font-size:20px;margin:0 0 12px}
+h3{font-size:16px;margin:0 0 8px}
+p{color:#aaa;line-height:1.45}
+.small{font-size:12px;color:var(--muted)}
+.muted{color:var(--muted)}
+.red{color:var(--red)}
+.card{background:var(--panel);border:1px solid var(--border);border-radius:18px;padding:16px;margin-bottom:12px}
+.row{display:flex;align-items:center;gap:10px}
+.between{justify-content:space-between}
+.stack{display:flex;flex-direction:column;gap:10px}
+.btn{
+  border:0;border-radius:14px;padding:14px 16px;font-weight:800;
+  background:var(--red);color:white;width:100%;transition:.15s
+}
+.btn:active{transform:scale(.98)}
+.btn.secondary{background:#1a1a1a;border:1px solid #303030}
+.btn.outline{background:transparent;border:1px solid var(--red);color:var(--red)}
+.btn.smallbtn{width:auto;padding:9px 12px;font-size:13px}
+.btn.danger{background:#351016;color:#ff5367;border:1px solid #5b1822}
+input,textarea,select{
+  width:100%;background:#151515;border:1px solid #303030;color:white;
+  border-radius:12px;padding:13px;outline:none
+}
+input:focus,textarea:focus{border-color:var(--red)}
+textarea{resize:vertical;min-height:70px}
+label{font-size:13px;color:#aaa;display:block;margin:10px 0 6px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.hero{
+  background:linear-gradient(135deg,#26070d,#101010 65%);
+  border:1px solid #47111b;border-radius:22px;padding:22px;margin-bottom:16px
+}
+.hero h1{font-size:34px;letter-spacing:2px}
+.hero p{margin-bottom:18px}
+.stat{background:#151515;border:1px solid #292929;border-radius:14px;padding:12px;text-align:center}
+.stat b{font-size:22px;display:block}
+.stat span{font-size:11px;color:#888}
+.section-title{display:flex;justify-content:space-between;align-items:center;margin:22px 0 12px}
+.room-card,.list-item{
+  background:#121212;border:1px solid #292929;border-radius:16px;padding:14px;
+  margin-bottom:10px
+}
+.room-card:active{border-color:var(--red)}
+.tag{font-size:11px;color:#ff6a7a;background:#2a0c11;padding:5px 8px;border-radius:8px}
+.avatar{
+  width:48px;height:48px;border-radius:15px;background:#2a0d12;
+  border:1px solid #4a121c;display:flex;align-items:center;justify-content:center;
+  font-weight:900;color:#ff4c60;overflow:hidden;flex-shrink:0
+}
+.avatar img{width:100%;height:100%;object-fit:cover}
+.avatar.big{width:90px;height:90px;border-radius:25px;font-size:28px}
+.bottom-nav{
+  position:fixed;bottom:0;left:50%;transform:translateX(-50%);
+  width:100%;max-width:600px;z-index:50;
+  display:grid;grid-template-columns:repeat(4,1fr);
+  background:rgba(9,9,9,.97);border-top:1px solid #292929;
+  padding:8px 8px calc(8px + env(safe-area-inset-bottom));
+  backdrop-filter:blur(15px)
+}
+.nav-btn{border:0;background:transparent;color:#777;padding:7px 2px;display:flex;flex-direction:column;align-items:center;gap:4px;font-size:10px}
+.nav-btn .nav-icon{font-size:21px}
+.nav-btn.active{color:var(--red)}
+.nav-btn.active .nav-icon{filter:drop-shadow(0 0 5px #e50925)}
+.badge{background:var(--red);color:white;border-radius:99px;padding:3px 7px;font-size:10px}
+.modal{
+  position:fixed;inset:0;z-index:100;background:rgba(0,0,0,.82);
+  display:none;align-items:center;justify-content:center;padding:20px
+}
+.modal.show{display:flex}
+.modal-box{width:100%;max-width:460px;max-height:90vh;overflow:auto;background:#111;border:1px solid #333;border-radius:22px;padding:20px}
+.modal-box h2{margin-bottom:16px}
+.welcome{
+  background:#080808 url("IMG_1813.jpeg") center/cover no-repeat;
+  position:relative;overflow:hidden
+}
+.welcome:before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.45),#080808 95%)}
+.welcome>*{position:relative}
+.welcome-logo{font-size:38px;font-weight:1000;letter-spacing:5px;margin:10px 0}
+.welcome-logo span{color:var(--red)}
+.screen-heading{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.chat-messages{display:flex;flex-direction:column;gap:10px;padding-bottom:12px}
+.message{max-width:85%;padding:11px 13px;background:#1b1b1b;border-radius:14px;align-self:flex-start;overflow-wrap:anywhere}
+.message.mine{align-self:flex-end;background:#45101a}
+.message .author{font-size:11px;color:#ff687a;margin-bottom:4px}
+.message .time{font-size:10px;color:#888;margin-top:5px;text-align:right}
+.question-card{background:linear-gradient(135deg,#27070d,#151515);border:1px solid #681626;border-radius:18px;padding:18px;margin-bottom:14px}
+.question-card .q-label{font-size:11px;color:#ff6b7b;letter-spacing:2px;font-weight:900;margin-bottom:10px}
+.question-card .question{font-size:21px;font-weight:850;line-height:1.3}
+.game-composer{position:sticky;bottom:75px;background:#080808;padding:10px 0;border-top:1px solid #222}
+.composer-row{display:flex;gap:8px;align-items:flex-end}
+.composer-row textarea{min-height:45px;max-height:120px}
+.icon-btn{width:46px;height:46px;flex-shrink:0;border:1px solid #333;background:#161616;border-radius:13px;font-size:20px}
+.voice-btn{background:#300b12;border-color:#671321}
+.voice-btn.recording{background:var(--red);animation:pulse .9s infinite;box-shadow:0 0 0 5px #e5092533}
+@keyframes pulse{0%{transform:scale(1)}50%{transform:scale(1.07)}100%{transform:scale(1)}}
+.recording-info{display:none;color:#ff566a;font-size:12px;padding:7px 2px}
+.recording-info.show{display:block}
+.player-strip{display:flex;gap:8px;overflow-x:auto;padding:5px 0 12px}
+.player-chip{white-space:nowrap;border:1px solid #333;border-radius:12px;padding:8px 10px;font-size:12px;color:#aaa}
+.player-chip.active{border-color:var(--red);color:white;background:#2a0b11}
+.progress{height:5px;background:#242424;border-radius:99px;overflow:hidden;margin:12px 0}
+.progress div{height:100%;background:var(--red);transition:width .2s}
+.option{display:flex;align-items:center;gap:10px;padding:13px;border:1px solid #333;border-radius:13px;margin-bottom:9px;background:#151515}
+.option.selected{border-color:var(--red);background:#260a10}
+.score-row{display:flex;align-items:center;gap:10px;padding:12px;border-bottom:1px solid #222}
+.score-row:last-child{border:0}
+.score-num{margin-left:auto;font-size:20px;font-weight:900;color:var(--red)}
+.achievement{border:1px solid #333;background:#151515;border-radius:13px;padding:12px}
+.achievement.locked{opacity:.35;filter:grayscale(1)}
+.achievement-icon{font-size:24px;margin-bottom:7px}
+.toast{
+  position:fixed;bottom:100px;left:50%;transform:translateX(-50%);
+  background:#252525;border:1px solid #444;border-radius:12px;padding:12px 16px;
+  z-index:150;display:none;max-width:90%;text-align:center
+}
+.toast.show{display:block;animation:screenIn .2s}
+.empty{text-align:center;color:#777;padding:30px 10px}
+hr{border:0;border-top:1px solid #292929;margin:15px 0}
+@media(min-width:600px){main{padding:20px}}
+</style>
+</head>
+
+<body>
+<div id="app">
+<header>
+  <button id="backBtn" class="header-btn" onclick="goBack()">←</button>
+  <div class="brand">ЧЕТ<span>ВЕРО</span></div>
+  <div class="header-right">
+    <button class="header-btn" onclick="openAchievements()">🏆</button>
+    <button class="header-btn" onclick="openProfile()">👤</button>
+  </div>
+</header>
+
+<main>
+<!-- HOME -->
+<section id="home" class="screen active">
+  <div class="hero">
+    <div class="small">ИГРА ДЛЯ СВОИХ</div>
+    <h1>ЧЕТ<span class="red">ВЕРО</span></h1>
+    <p>Вопросы, ответы, неожиданные признания и голосование.</p>
+    <button class="btn" onclick="openCreateRoom()">＋ Создать комнату</button>
+    <button class="btn secondary" style="margin-top:9px" onclick="showScreen('roomScreen')">Присоединиться к игре</button>
+  </div>
+
+  <div class="grid2">
+    <div class="stat"><b id="statGames">0</b><span>ИГР СЫГРАНО</span></div>
+    <div class="stat"><b id="statPoints">0</b><span>ОЧКОВ</span></div>
+  </div>
+
+  <div class="section-title"><h2>Мои комнаты</h2><button class="btn smallbtn secondary" onclick="openCreateRoom()">Создать</button></div>
+  <div id="homeRooms"></div>
+
+  <div class="section-title"><h2>Последняя игра</h2></div>
+  <div id="lastGame" class="card"><div class="empty">Ты ещё не играл</div></div>
+</section>
+
+<!-- ROOMS -->
+<section id="roomScreen" class="screen">
+  <div class="screen-heading"><h1>Комнаты</h1><button class="btn smallbtn" onclick="openCreateRoom()">＋ Создать</button></div>
+  <div class="card">
+    <label>Код комнаты</label>
+    <input id="joinCode" placeholder="Например, A4B2">
+    <button class="btn" style="margin-top:10px" onclick="joinRoomByCode()">Войти по коду</button>
+  </div>
+  <h2>Мои комнаты</h2>
+  <div id="roomsList"></div>
+</section>
+
+<!-- SETTINGS -->
+<section id="settingsScreen" class="screen">
+  <h1>Настройки</h1>
+  <div class="card">
+    <label>Имя игрока</label><input id="settingsName">
+    <label>Тег игрока</label><input id="settingsTag" disabled>
+    <button class="btn" style="margin-top:12px" onclick="saveSettings()">Сохранить</button>
+  </div>
+  <div class="card">
+    <h3>Оформление</h3>
+    <p>Тёмная тема с красными акцентами</p>
+    <span class="tag">ЧЕТВЕРО / RED</span>
+  </div>
+  <button class="btn secondary" onclick="showScreen('rules')">Правила игры</button>
+  <button class="btn danger" style="margin-top:10px" onclick="resetLocalData()">Сбросить данные приложения</button>
+</section>
+
+<!-- GAME CHAT -->
+<section id="gameChatScreen" class="screen">
+  <div class="screen-heading">
+    <div><div class="small" id="gameRoomLabel">КОМНАТА</div><h1 style="margin-bottom:0">Игровой чат</h1></div>
+    <button class="btn smallbtn secondary" onclick="showScreen('roomScreen')">Комната</button>
+  </div>
+
+  <div class="player-strip" id="playerStrip"></div>
+  <div class="small" id="roundLabel"></div>
+  <div class="progress"><div id="roundProgress" style="width:0"></div></div>
+
+  <div id="questionCard"></div>
+  <div id="gameMessages" class="chat-messages"></div>
+
+  <div class="game-composer">
+    <div class="recording-info" id="recordingInfo">● Запись голосового <b id="recordingTime">00:00</b> — отпусти, чтобы отправить</div>
+    <div class="composer-row">
+      <button class="icon-btn" onclick="document.getElementById('gameFile').click()">＋</button>
+      <textarea id="gameInput" placeholder="Напиши ответ..." rows="1"></textarea>
+      <button class="icon-btn voice-btn" id="voiceBtn" aria-label="Удерживай для записи">🎙</button>
+      <button class="icon-btn" onclick="sendGameMessage()">➤</button>
+    </div>
+    <input type="file" id="gameFile" accept="image/*" hidden onchange="handleGameFile(event)">
+  </div>
+</section>
+
+<!-- VOTE -->
+<section id="voteScreen" class="screen">
+  <h1>Голосование</h1>
+  <div class="card"><p id="voteQuestion">Кто ответил лучше всех?</p><div class="small" id="voteProgressText"></div></div>
+  <div id="voteOptions"></div>
+  <button class="btn" onclick="submitVote()">Проголосовать</button>
+</section>
+
+<!-- SCORE -->
+<section id="scoreScreen" class="screen">
+  <h1>Результаты раунда</h1>
+  <div class="card"><p id="scoreSummary">Голосование завершено</p></div>
+  <div id="scoreList"></div>
+  <button class="btn" onclick="nextRound()">Следующий раунд</button>
+</section>
+
+<!-- FINISH -->
+<section id="finishScreen" class="screen">
+  <div class="hero" style="text-align:center">
+    <div style="font-size:55px">🏆</div>
+    <h1>Игра завершена</h1>
+    <p id="finishSummary">Спасибо за игру!</p>
+  </div>
+  <div id="finishScores"></div>
+  <button class="btn" onclick="showScreen('home')">На главную</button>
+  <button class="btn secondary" style="margin-top:10px" onclick="restartCurrentRoom()">Сыграть ещё раз</button>
+</section>
+
+<!-- FRIENDS -->
+<section id="friends" class="screen">
+  <h1>Друзья</h1>
+  <div class="card">
+    <label>Добавить по тегу</label>
+    <input id="friendTagInput" placeholder="Например, 4821">
+    <button class="btn" style="margin-top:10px" onclick="addFriend()">Добавить</button>
+    <p class="small">В этой версии поиск доступен среди профилей, созданных на этом устройстве.</p>
+  </div>
+  <div class="section-title"><h2>Мои друзья</h2></div>
+  <div id="friendsList"></div>
+</section>
+
+<!-- CHATS -->
+<section id="chats" class="screen">
+  <h1>Сообщения</h1>
+  <div id="chatsList"></div>
+</section>
+
+<!-- PRIVATE CHAT -->
+<section id="chatScreen" class="screen">
+  <div class="screen-heading"><h1 id="privateChatTitle">Чат</h1></div>
+  <div id="privateMessages" class="chat-messages"></div>
+  <div class="composer-row">
+    <textarea id="privateInput" placeholder="Сообщение..." rows="1"></textarea>
+    <button class="icon-btn" onclick="sendPrivateMessage()">➤</button>
+  </div>
+</section>
+
+<!-- PROFILE -->
+<section id="profile" class="screen">
+  <h1>Профиль</h1>
+  <div class="card" style="text-align:center">
+    <div class="avatar big" id="profileAvatar" style="margin:0 auto 12px">Ч</div>
+    <h2 id="profileName">Игрок</h2>
+    <div class="small">Тег игрока: <span id="profileTag">----</span></div>
+    <button class="btn secondary smallbtn" style="margin-top:12px" onclick="document.getElementById('avatarFile').click()">Изменить фото</button>
+    <input type="file" id="avatarFile" accept="image/*" hidden onchange="changeAvatar(event)">
+  </div>
+  <div class="card">
+    <label>Имя</label><input id="profileNameInput">
+    <button class="btn" style="margin-top:10px" onclick="saveProfile()">Сохранить профиль</button>
+  </div>
+  <div class="grid2">
+    <div class="stat"><b id="profileGames">0</b><span>ИГР</span></div>
+    <div class="stat"><b id="profilePoints">0</b><span>ОЧКОВ</span></div>
+  </div>
+  <div class="section-title"><h2>Достижения</h2><button class="btn smallbtn secondary" onclick="openAchievements()">Все</button></div>
+  <div id="profileAchievements" class="grid2"></div>
+  <button class="btn secondary" style="margin-top:15px" onclick="showScreen('settingsScreen')">Настройки</button>
+</section>
+
+<!-- RULES -->
+<section id="rules" class="screen">
+  <h1>Правила</h1>
+  <div class="card">
+    <h3>1. Создайте комнату</h3><p>Выберите категорию, количество раундов и способ голосования.</p>
+    <h3>2. Отвечайте по очереди</h3><p>Каждый игрок отправляет текст, фото или голосовое сообщение и нажимает «Я ответил».</p>
+    <h3>3. Голосуйте</h3><p>После ответов всех игроков начинается голосование. Результаты открываются после завершения голосования.</p>
+    <h3>4. Побеждайте</h3><p>Очки начисляются за голоса других игроков.</p>
+  </div>
+</section>
+
+<!-- ACHIEVEMENTS -->
+<section id="achievementsScreen" class="screen">
+  <h1>Достижения</h1>
+  <div id="allAchievements" class="grid2"></div>
+</section>
+</main>
+
+<nav class="bottom-nav" id="bottomNav">
+  <button class="nav-btn active" data-nav="home" onclick="showScreen('home')"><span class="nav-icon">⌂</span>Главная</button>
+  <button class="nav-btn" data-nav="friends" onclick="showScreen('friends')"><span class="nav-icon">♙</span>Друзья</button>
+  <button class="nav-btn" data-nav="chats" onclick="showScreen('chats')"><span class="nav-icon">▤</span>Чаты</button>
+  <button class="nav-btn" data-nav="profile" onclick="openProfile()"><span class="nav-icon">◉</span>Профиль</button>
+</nav>
+</div>
+
+<!-- CREATE ROOM MODAL -->
+<div class="modal" id="createRoomModal">
+<div class="modal-box">
+  <div class="row between"><h2>Новая игра</h2><button class="header-btn" onclick="closeModal('createRoomModal')">✕</button></div>
+  <label>Название комнаты</label><input id="newRoomName" placeholder="Например, Вечер с друзьями">
+  <label>Категория</label><select id="newRoomCategory"></select>
+  <label>Количество раундов</label><select id="newRoomRounds">
+    <option value="3">3 раунда</option><option value="5" selected>5 раундов</option><option value="7">7 раундов</option><option value="10">10 раундов</option>
+  </select>
+  <label>Голосование</label><select id="newRoomVote">
+    <option value="best">За лучший ответ</option><option value="funny">За самый смешной</option><option value="secret">Анонимное голосование</option>
+  </select>
+  <label>Игроки (через запятую)</label><textarea id="newRoomPlayers" placeholder="Например: Аня, Макс, Дима"></textarea>
+  <button class="btn" onclick="createRoom()">Создать комнату</button>
+</div>
+</div>
+
+<!-- WELCOME -->
+<div class="modal" id="welcomeModal">
+<div class="modal-box welcome">
+  <div class="welcome-logo">ЧЕТ<span>ВЕРО</span></div>
+  <p>Твоя компания. Твои ответы. Твои правила.</p>
+  <label>Как тебя зовут?</label><input id="welcomeName" maxlength="20" placeholder="Имя игрока">
+  <button class="btn" style="margin-top:14px" onclick="completeWelcome()">Начать</button>
+</div>
+</div>
+
+<div class="modal" id="achievementsModal">
+<div class="modal-box">
+  <div class="row between"><h2>Достижения</h2><button class="header-btn" onclick="closeModal('achievementsModal')">✕</button></div>
+  <div id="modalAchievements" class="grid2"></div>
+</div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const $=id=>document.getElementById(id);
+const STORAGE_KEY="chetvero_app";
+const PROFILE_KEY="chetvero_profiles";
+
+const categories={
+  "Смешные":["Кто из вас первым станет мемом?","Кто чаще всего опаздывает?","Кто выживет в зомби-апокалипсисе?","Кто самый странный в компании?","Кто мог бы случайно попасть в новости?"],
+  "Дружба":["Кому ты доверяешь больше всего?","Кто всегда поддержит?","С кем ты отправился бы в путешествие?","Кто лучше всех хранит секреты?","Кто знает тебя лучше остальных?"],
+  "Отношения":["Кто быстрее всех влюбится?","Кто самый романтичный?","Кто первым напишет бывшему?","Кто скрывает симпатию?","Кто верит в любовь с первого взгляда?"],
+  "Провокационные":["Кто чаще всего врёт?","Кто может скрывать двойную жизнь?","Кто самый ревнивый?","Кто первым нарушит обещание?","Кто умеет манипулировать?"],
+  "Личные":["Какой твой самый большой страх?","О чём ты редко рассказываешь?","Какое решение ты хотел бы изменить?","Что тебя раздражает в себе?","Какой секрет ты готов раскрыть?"],
+  "Школа":["Кто был бы любимчиком учителя?","Кто списывал чаще всех?","Кто прогуливал бы уроки?","Кто стал бы директором?","Кто самый умный?"],
+  "Работа":["Кто первым уволится?","Кто станет начальником?","Кто ничего не делает, но получает зарплату?","Кто самый трудолюбивый?","Кто устроит корпоративный скандал?"],
+  "Путешествия":["Кто потеряется в аэропорту?","Кто забудет паспорт?","Кто потратит все деньги за день?","Кто выберет самое странное место?","Кто будет планировать всё заранее?"],
+  "Ночь":["Кто не спит до утра?","Кто отправляет сообщения ночью?","Кто самый загадочный?","Кто любит ночные прогулки?","Кто первым уснёт на вечеринке?"],
+  "Фантазии":["Кто стал бы супергероем?","Кто первым полетел бы на Марс?","Кто мог бы читать мысли?","Кто стал бы знаменитым?","Кто выбрал бы жизнь на острове?"],
+  "Безумие":["Кто прыгнул бы с парашютом без подготовки?","Кто сделал бы татуировку спонтанно?","Кто рискнул бы всем ради идеи?","Кто первым согласится на безумную авантюру?","Кто самый непредсказуемый?"],
+  "Универсальные":["Кто самый харизматичный?","Кто самый убедительный?","Кто чаще всего меняет мнение?","Кто лучше всех умеет выкручиваться?","Кто самый загадочный человек здесь?"]
+};
+
+const achievementList=[
+["Первый шаг","Сыграй первую игру","🎮",d=>d.stats.games>=1],
+["Игрок","Сыграй 5 игр","🕹",d=>d.stats.games>=5],
+["Завсегдатай","Сыграй 10 игр","🔥",d=>d.stats.games>=10],
+["Легенда","Сыграй 25 игр","👑",d=>d.stats.games>=25],
+["Победитель","Получи первое очко","🏆",d=>d.stats.points>=1],
+["Популярный","Набери 10 очков","⭐",d=>d.stats.points>=10],
+["Звезда","Набери 50 очков","🌟",d=>d.stats.points>=50],
+["Мастер","Набери 100 очков","💎",d=>d.stats.points>=100],
+["Создатель","Создай комнату","🏠",d=>d.rooms.length>=1],
+["Компания","Добавь друга","👥",d=>d.friends.length>=1],
+["Общительный","Отправь сообщение","💬",d=>d.stats.messages>=1],
+["Голос","Отправь голосовое","🎙",d=>d.stats.voice>=1],
+["Фотограф","Отправь фото","📸",d=>d.stats.photos>=1],
+["Первый ответ","Ответь в игре","✍️",d=>d.stats.answers>=1],
+["Участник","Ответь 10 раз","📝",d=>d.stats.answers>=10],
+["Голосующий","Проголосуй","🗳",d=>d.stats.votes>=1],
+["Судья","Проголосуй 10 раз","⚖️",d=>d.stats.votes>=10],
+["Профиль","Настрой профиль","👤",d=>!!d.avatar],
+["Имя","Измени имя","✏️",d=>d.stats.nameChanges>=1],
+["Первый друг","Добавь друга","🤝",d=>d.friends.length>=1],
+...Array.from({length:30},(_,i)=>[`Секрет ${i+1}`,`Особое достижение №${i+1}`,"🔒",()=>false])
+];
+
+let data=loadData();
+let currentScreen="home";
+let previousScreen="home";
+let room=null;
+let game=null;
+let privateChatId=null;
+let recorder=null;
+let recorderStream=null;
+let recordingStarted=0;
+let recordingTimer=null;
+let holdRequested=false;
+let currentVote=null;
+let selectedVote=null;
+
+function loadData(){
+  try{
+    const saved=JSON.parse(localStorage.getItem(STORAGE_KEY));
+    if(saved)return saved;
+  }catch(e){}
+  return {
+    name:"Игрок",tag:String(Math.floor(1000+Math.random()*9000)),
+    avatar:"",rooms:[],friends:[],privateMessages:{},
+    stats:{games:0,points:0,messages:0,voice:0,photos:0,answers:0,votes:0,nameChanges:0},
+    achievements:[],lastGame:null
+  };
+}
+function saveData(){
+  localStorage.setItem(STORAGE_KEY,JSON.stringify(data));
+  try{
+    const profiles=JSON.parse(localStorage.getItem(PROFILE_KEY)||"[]");
+    const p=profiles.filter(x=>x.tag!==data.tag);
+    p.push({name:data.name,tag:data.tag,avatar:data.avatar});
+    localStorage.setItem(PROFILE_KEY,JSON.stringify(p));
+  }catch(e){}
+  renderHome();
+}
+function toast(msg){
+  $("toast").textContent=msg;$("toast").classList.add("show");
+  setTimeout(()=>$("toast").classList.remove("show"),2400);
+}
+function showScreen(id){
+  if(!$(id)){toast("Экран не найден");return}
+  if(currentScreen!==id)previousScreen=currentScreen;
+  currentScreen=id;
+  document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
+  $(id).classList.add("active");
+  const mainTabs=["home","friends","chats","profile"];
+  $("bottomNav").style.display=mainTabs.includes(id)?"grid":"none";
+  document.querySelectorAll(".nav-btn").forEach(b=>b.classList.toggle("active",b.dataset.nav===id));
+  $("backBtn").style.display=mainTabs.includes(id)?"none":"block";
+  if(id==="home")renderHome();
+  if(id==="roomScreen")renderRooms();
+  if(id==="friends")renderFriends();
+  if(id==="chats")renderChats();
+  if(id==="profile")renderProfile();
+  if(id==="settingsScreen")renderSettings();
+  window.scrollTo(0,0);
+}
+function goBack(){
+  const map={
+    roomScreen:"home",settingsScreen:"profile",gameChatScreen:"roomScreen",
+    voteScreen:"gameChatScreen",scoreScreen:"roomScreen",finishScreen:"home",
+    chatScreen:"chats",rules:"settingsScreen",achievementsScreen:"profile"
+  };
+  showScreen(map[currentScreen]||"home");
+}
+function openProfile(){showScreen("profile")}
+function openAchievements(){
+  renderAchievements();
+  $("achievementsModal").classList.add("show");
+}
+function closeModal(id){$(id).classList.remove("show")}
+function renderHome(){
+  $("statGames").textContent=data.stats.games;
+  $("statPoints").textContent=data.stats.points;
+  $("homeRooms").innerHTML=data.rooms.length?data.rooms.slice().reverse().slice(0,3).map(roomCard).join(""):'<div class="empty">Комнат пока нет</div>';
+  $("lastGame").innerHTML=data.lastGame?`<b>${escapeHTML(data.lastGame.name)}</b><p>${data.lastGame.date||""}</p>`:'<div class="empty">Ты ещё не играл</div>';
+}
+function renderRooms(){
+  $("roomsList").innerHTML=data.rooms.length?data.rooms.slice().reverse().map(roomCard).join(""):'<div class="empty">Создай первую комнату</div>';
+}
+function roomCard(r){
+  return `<div class="room-card" onclick="openRoom('${r.id}')">
+    <div class="row between"><b>${escapeHTML(r.name)}</b><span class="tag">${r.code}</span></div>
+    <p>${escapeHTML(r.category)} · ${r.rounds} раундов</p>
+    <div class="small">${r.players.length} игроков</div>
+  </div>`;
+}
+function openCreateRoom(){
+  $("newRoomCategory").innerHTML=Object.keys(categories).map(c=>`<option>${escapeHTML(c)}</option>`).join("");
+  $("createRoomModal").classList.add("show");
+}
+function createRoom(){
+  const players=$("newRoomPlayers").value.split(",").map(x=>x.trim()).filter(Boolean);
+  const allPlayers=[data.name,...players];
+  const r={
+    id:Date.now().toString(),name:$("newRoomName").value.trim()||"Новая комната",
+    code:Math.random().toString(36).substring(2,6).toUpperCase(),
+    category:$("newRoomCategory").value,
+    rounds:Number($("newRoomRounds").value),
+    voteMode:$("newRoomVote").value,
+    players:[...new Set(allPlayers)],created:Date.now()
+  };
+  data.rooms.push(r);saveData();closeModal("createRoomModal");
+  $("newRoomName").value="";$("newRoomPlayers").value="";
+  openRoom(r.id);
+}
+function joinRoomByCode(){
+  const code=$("joinCode").value.trim().toUpperCase();
+  const r=data.rooms.find(x=>x.code===code);
+  if(!r){toast("Комната с таким кодом не найдена на этом устройстве");return}
+  openRoom(r.id);
+}
+function openRoom(id){
+  room=data.rooms.find(r=>r.id===id);
+  if(!room){toast("Комната не найдена");return}
+  const existing=game&&game.roomId===room.id;
+  if(!existing){
+    game={
+      roomId:room.id,round:1,turn:0,answers:[],messages:[],
+      scores:Object.fromEntries(room.players.map(p=>[p,0])),
+      votes:[],question:null,answerSent:false,completed:false,
+      voted:false
+    };
+    nextQuestion();
+  }
+  showScreen("gameChatScreen");renderGame();
+}
+function nextQuestion(){
+  const qs=categories[room.category]||categories["Универсальные"];
+  game.question=qs[Math.floor(Math.random()*qs.length)];
+  game.turn=0;game.answers=[];game.votes=[];game.voted=false;
+  game.answerSent=false;
+}
+function renderGame(){
+  if(!game||!room)return;
+  $("gameRoomLabel").textContent=room.name+" · "+room.code;
+  $("roundLabel").textContent=`Раунд ${game.round} из ${room.rounds}`;
+  $("roundProgress").style.width=(game.round/room.rounds*100)+"%";
+  $("playerStrip").innerHTML=room.players.map((p,i)=>`<div class="player-chip ${i===game.turn?"active":""}">${i===game.turn?"● ":""}${escapeHTML(p)}</div>`).join("");
+  const player=room.players[game.turn];
+  const allAnswered=game.turn>=room.players.length;
+  $("questionCard").innerHTML=`
+    <div class="question-card">
+      <div class="q-label">ВОПРОС · ${escapeHTML(room.category.toUpperCase())}</div>
+      <div class="question">${escapeHTML(game.question)}</div>
+      <p>Сейчас отвечает: <b>${allAnswered?"Все игроки":escapeHTML(player)}</b></p>
+      ${game.answerSent&&!allAnswered?`<button class="btn" onclick="markAnswered()">Я ответил</button>`:""}
+      ${allAnswered?`<button class="btn" onclick="startVoting()">Перейти к голосованию</button>`:""}
+    </div>`;
+  $("gameMessages").innerHTML=game.messages.map(m=>`
+    <div class="message ${m.player===data.name?"mine":""}">
+      <div class="author">${escapeHTML(m.player)}</div>
+      ${m.type==="image"?`<img src="${m.content}" style="max-width:100%;border-radius:10px">`:m.type==="audio"?`<audio controls src="${m.content}" style="max-width:100%"></audio>`:escapeHTML(m.content)}
+      <div class="time">${m.time||""}</div>
+    </div>`).join("");
+  $("gameMessages").scrollTop=$("gameMessages").scrollHeight;
+}
+function sendGameMessage(){
+  if(!game||!room)return;
+  if(game.turn>=room.players.length){toast("Ответы завершены");return}
+  const text=$("gameInput").value.trim();
+  if(!text)return;
+  addGameMessage("text",text);
+  $("gameInput").value="";
+}
+function addGameMessage(type,content){
+  const player=room.players[game.turn];
+  game.messages.push({player,type,content,time:new Date().toLocaleTimeString([], {hour:"2-digit",minute:"2-digit"})});
+  game.answerSent=true;
+  data.stats.answers++;
+  saveData();renderGame();
+}
+function markAnswered(){
+  if(!game.answerSent){toast("Сначала отправь ответ");return}
+  game.answers.push(room.players[game.turn]);
+  game.turn++;
+  game.answerSent=false;
+  if(game.turn>=room.players.length){
+    renderGame();
+    toast("Все ответили! Переходим к голосованию");
+  }else{
+    toast("Теперь отвечает "+room.players[game.turn]);
+    renderGame();
+  }
+}
+function handleGameFile(e){
+  const file=e.target.files[0];if(!file)return;
+  if(!file.type.startsWith("image/")){toast("Выбери изображение");return}
+  if(file.size>2*1024*1024){toast("Фото больше 2 МБ. Выбери файл поменьше");return}
+  const reader=new FileReader();
+  reader.onload=()=>{addGameMessage("image",reader.result);data.stats.photos++;saveData()};
+  reader.readAsDataURL(file);e.target.value="";
+}
+
+/* HOLD-TO-RECORD */
+const voiceBtn=$("voiceBtn");
+voiceBtn.addEventListener("pointerdown",async e=>{
+  e.preventDefault();
+  if(!game||!room){toast("Сначала открой игру");return}
+  if(game.turn>=room.players.length){toast("Ответы завершены");return}
+  holdRequested=true;
+  voiceBtn.classList.add("recording");
+  try{
+    recorderStream=await navigator.mediaDevices.getUserMedia({audio:true});
+    if(!holdRequested){recorderStream.getTracks().forEach(t=>t.stop());recorderStream=null;return}
+    recorder=new MediaRecorder(recorderStream);
+    const chunks=[];
+    recorder.ondataavailable=e=>{if(e.data&&e.data.size)chunks.push(e.data)};
+    recorder.onstop=()=>{
+      recorderStream?.getTracks().forEach(t=>t.stop());
+      recorderStream=null;
+      if(chunks.length){
+        const blob=new Blob(chunks,{type:recorder.mimeType||"audio/webm"});
+        if(blob.size>1.5*1024*1024){toast("Голосовое слишком большое");return}
+        const reader=new FileReader();
+        reader.onload=()=>{addGameMessage("audio",reader.result);data.stats.voice++;saveData()};
+        reader.readAsDataURL(blob);
+      }
+    };
+    recorder.start();
+    recordingStarted=Date.now();
+    $("recordingInfo").classList.add("show");
+    recordingTimer=setInterval(()=>{
+      const seconds=Math.floor((Date.now()-recordingStarted)/1000);
+      $("recordingTime").textContent=String(Math.floor(seconds/60)).padStart(2,"0")+":"+String(seconds%60).padStart(2,"0");
+    },250);
+  }catch(err){
+    holdRequested=false;voiceBtn.classList.remove("recording");
+    toast("Разреши доступ к микрофону в браузере");
+  }
+});
+function stopRecording(){
+  holdRequested=false;
+  voiceBtn.classList.remove("recording");
+  clearInterval(recordingTimer);
+  $("recordingInfo").classList.remove("show");
+  if(recorder&&recorder.state==="recording")recorder.stop();
+  recorder=null;
+}
+voiceBtn.addEventListener("pointerup",e=>{e.preventDefault();stopRecording()});
+voiceBtn.addEventListener("pointercancel",stopRecording);
+window.addEventListener("pointerup",()=>{if(holdRequested)stopRecording()});
+
+/* VOTING */
+function startVoting(){
+  if(game.turn<room.players.length){toast("Не все игроки ответили");return}
+  currentVote=0;selectedVote=null;
+  game.votes=[];
+  renderVote();
+  showScreen("voteScreen");
+}
+function renderVote(){
+  const voter=room.players[currentVote];
+  $("voteProgressText").textContent=`Голосует ${voter} · ${currentVote+1}/${room.players.length}`;
+  $("voteOptions").innerHTML=room.players.filter(p=>p!==voter).map(p=>`
+    <div class="option ${selectedVote===p?"selected":""}" onclick="selectVote('${escapeJS(p)}')">
+      <span>◯</span><b>${escapeHTML(p)}</b>
+    </div>`).join("");
+}
+function selectVote(name){selectedVote=name;renderVote()}
+function submitVote(){
+  if(!selectedVote){toast("Выбери игрока");return}
+  game.votes.push({voter:room.players[currentVote],target:selectedVote});
+  data.stats.votes++;saveData();
+  currentVote++;
+  selectedVote=null;
+  if(currentVote>=room.players.length){
+    revealVotes();
+  }else renderVote();
+}
+function revealVotes(){
+  game.votes.forEach(v=>{game.scores[v.target]=(game.scores[v.target]||0)+1});
+  const sorted=Object.entries(game.scores).sort((a,b)=>b[1]-a[1]);
+  $("scoreSummary").textContent="Голосование завершено. Результаты открыты всем.";
+  $("scoreList").innerHTML=sorted.map(([name,score],i)=>`
+    <div class="score-row"><span>${i===0?"🏆":i+1+"."}</span><b>${escapeHTML(name)}</b><span class="score-num">${score}</span></div>`).join("");
+  showScreen("scoreScreen");
+}
+function nextRound(){
+  if(game.round>=room.rounds){endGame();return}
+  game.round++;
+  nextQuestion();
+  showScreen("gameChatScreen");
+  renderGame();
+}
+function endGame(){
+  const sorted=Object.entries(game.scores).sort((a,b)=>b[1]-a[1]);
+  const winner=sorted[0];
+  data.stats.games++;
+  data.stats.points+=winner?winner[1]:0;
+  data.lastGame={name:room.name,date:new Date().toLocaleDateString(),winner:winner?.[0]};
+  $("finishSummary").textContent=winner?`Победитель: ${winner[0]} · ${winner[1]} очков`:"Игра завершена";
+  $("finishScores").innerHTML=sorted.map(([name,score],i)=>`<div class="score-row"><b>${i+1}. ${escapeHTML(name)}</b><span class="score-num">${score}</span></div>`).join("");
+  saveData();showScreen("finishScreen");
+}
+function restartCurrentRoom(){
+  if(!room)return;
+  openRoom(room.id);
+}
+
+/* PROFILE */
+function renderProfile(){
+  $("profileName").textContent=data.name;
+  $("profileNameInput").value=data.name;
+  $("profileTag").textContent="#"+data.tag;
+  $("profileGames").textContent=data.stats.games;
+  $("profilePoints").textContent=data.stats.points;
+  renderAvatar($("profileAvatar"),data.name,data.avatar);
+  $("profileAchievements").innerHTML=achievementList.slice(0,4).map(achievementHTML).join("");
+}
+function renderAvatar(el,name,src){
+  el.innerHTML=src?`<img src="${src}">`:escapeHTML((name||"Ч").charAt(0).toUpperCase());
+}
+function saveProfile(){
+  const name=$("profileNameInput").value.trim().slice(0,20);
+  if(!name){toast("Введите имя");return}
+  if(name!==data.name)data.stats.nameChanges++;
+  data.name=name;saveData();renderProfile();toast("Профиль сохранён");
+}
+function changeAvatar(e){
+  const file=e.target.files[0];if(!file)return;
+  if(!file.type.startsWith("image/"))return;
+  if(file.size>1.5*1024*1024){toast("Фото должно быть меньше 1.5 МБ");return}
+  const reader=new FileReader();
+  reader.onload=()=>{data.avatar=reader.result;saveData();renderProfile();toast("Фото обновлено")};
+  reader.readAsDataURL(file);
+}
+function renderSettings(){
+  $("settingsName").value=data.name;
+  $("settingsTag").value="#"+data.tag;
+}
+function saveSettings(){
+  const n=$("settingsName").value.trim();
+  if(n){if(n!==data.name)data.stats.nameChanges++;data.name=n}
+  saveData();toast("Настройки сохранены");
+}
+function resetLocalData(){
+  if(!confirm("Удалить локальные данные приложения?"))return;
+  localStorage.removeItem(STORAGE_KEY);location.reload();
+}
+
+/* FRIENDS */
+function addFriend(){
+  const tag=$("friendTagInput").value.replace("#","").trim();
+  if(tag===data.tag){toast("Нельзя добавить самого себя");return}
+  let profiles=[];
+  try{profiles=JSON.parse(localStorage.getItem(PROFILE_KEY)||"[]")}catch(e){}
+  const found=profiles.find(p=>p.tag===tag);
+  if(!found){toast("Профиль с таким тегом не найден на этом устройстве");return}
+  if(data.friends.some(f=>f.tag===found.tag)){toast("Этот игрок уже в друзьях");return}
+  data.friends.push(found);saveData();renderFriends();$("friendTagInput").value="";
+  toast("Друг добавлен");
+}
+function renderFriends(){
+  $("friendsList").innerHTML=data.friends.length?data.friends.map(f=>`
+    <div class="list-item row" onclick="openPrivateChat('${f.tag}')">
+      <div class="avatar">${f.avatar?`<img src="${f.avatar}">`:escapeHTML(f.name[0])}</div>
+      <div style="flex:1"><b>${escapeHTML(f.name)}</b><div class="small">#${f.tag}</div></div>
+      <span>›</span>
+    </div>`).join(""):'<div class="empty">Пока нет друзей</div>';
+}
+function openPrivateChat(tag){
+  privateChatId=tag;
+  const f=data.friends.find(x=>x.tag===tag);
+  $("privateChatTitle").textContent=f?.name||"Чат";
+  showScreen("chatScreen");renderPrivateMessages();
+}
+function privateKey(){return privateChatId}
+function renderPrivateMessages(){
+  const msgs=data.privateMessages[privateKey()]||[];
+  $("privateMessages").innerHTML=msgs.map(m=>`<div class="message ${m.mine?"mine":""}">${escapeHTML(m.text)}<div class="time">${m.time}</div></div>`).join("");
+}
+function sendPrivateMessage(){
+  const text=$("privateInput").value.trim();if(!text)return;
+  if(!data.privateMessages[privateKey()])data.privateMessages[privateKey()]=[];
+  data.privateMessages[privateKey()].push({text,mine:true,time:new Date().toLocaleTimeString([], {hour:"2-digit",minute:"2-digit"})});
+  data.stats.messages++;$("privateInput").value="";
+  saveData();renderPrivateMessages();
+}
+function renderChats(){
+  $("chatsList").innerHTML=data.friends.length?data.friends.map(f=>`
+    <div class="list-item row" onclick="openPrivateChat('${f.tag}')">
+      <div class="avatar">${escapeHTML(f.name[0])}</div><div style="flex:1"><b>${escapeHTML(f.name)}</b><div class="small">Открыть чат</div></div>›
+    </div>`).join(""):'<div class="empty">Добавь друзей, чтобы открыть чаты</div>';
+}
+
+/* ACHIEVEMENTS */
+function unlocked(a){try{return !!a[3](data)}catch(e){return false}}
+function achievementHTML(a){
+  const ok=unlocked(a);
+  return `<div class="achievement ${ok?"":"locked"}"><div class="achievement-icon">${a[2]}</div><b>${escapeHTML(a[0])}</b><div class="small">${escapeHTML(a[1])}</div></div>`;
+}
+function renderAchievements(){
+  $("allAchievements").innerHTML=achievementList.map(achievementHTML).join("");
+  $("modalAchievements").innerHTML=achievementList.map(achievementHTML).join("");
+}
+
+/* REGISTRATION */
+function completeWelcome(){
+  const name=$("welcomeName").value.trim();
+  if(!name){toast("Введи имя");return}
+  data.name=name;saveData();closeModal("welcomeModal");renderProfile();renderHome();
+}
+
+/* UTILITIES */
+function escapeHTML(s){
+  return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+}
+function escapeJS(s){return String(s).replace(/\\/g,"\\\\").replace(/'/g,"\\'")}
+function renderAll(){
+  renderHome();renderRooms();renderFriends();renderChats();renderProfile();
+}
+window.addEventListener("DOMContentLoaded",()=>{
+  renderAll();
+  if(!localStorage.getItem(STORAGE_KEY))$("welcomeModal").classList.add("show");
+});
+</script>
+</body>
+</html>
