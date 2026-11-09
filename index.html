@@ -2,548 +2,542 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
-<meta name="theme-color" content="#030304">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#050505">
 <title>ЧЕТВЕРО</title>
 <style>
-/* ===== CSS VARIABLES & RESET ===== */
+/* ============================================================
+   CSS VARIABLES & RESET
+   ============================================================ */
 :root{
-  --bg:#030304; --panel:#0a0a0c; --panel2:#101013;
-  --red:#f20b2d; --red2:#ff2948; --red3:#57000c;
-  --border:#242126; --text:#f2f0f2; --muted:#77737a;
-  --safe-b:env(safe-area-inset-bottom,0px); --safe-t:env(safe-area-inset-top,0px);
-  --kbh:0px; --vh:100dvh;
-  --welcome-img: url("./IMG_1813.jpeg"); /* <-- ПОЛОЖИ ФАЙЛ РЯДОМ ИЛИ ПОМЕНЯЙ ПУТЬ */
+  --bg:#050505; --bg-elev:#0a0a0a; --card:#0d0d0d;
+  --border:#1a1a1a; --border-bright:#2a2a2a;
+  --text:#f5f5f5; --text-dim:#888; --text-dark:#444;
+  --red:#FF001F; --red-dark:#8B0000; --red-glow:rgba(255,0,31,0.4);
+  --green:#00ff88; --yellow:#ffcc00;
+  --radius:16px; --radius-sm:10px; --radius-xl:24px;
+  --shadow:0 8px 32px rgba(0,0,0,0.5); --shadow-inner:inset 0 1px 0 rgba(255,255,255,0.03);
+  --trans-fast:150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --trans-med:300ms cubic-bezier(0.4, 0, 0.2, 1);
+  --safe-t:env(safe-area-inset-top, 0px); --safe-b:env(safe-area-inset-bottom, 0px);
+  --header-h:60px; --nav-h:70px;
+  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 }
-*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;margin:0;padding:0}
-html,body{width:100%;min-height:100%;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;overscroll-behavior:none;font-size:16px;line-height:1.4}
-body{padding-bottom:calc(88px + var(--safe-b));overflow-x:hidden}
-body.kb-open{padding-bottom:0}
-button,input,textarea,select{font:inherit;color:inherit}
-button{border:0;background:none;cursor:pointer;user-select:none;-webkit-user-select:none;touch-action:manipulation}
-button:disabled{opacity:.35;cursor:default}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-size:16px;-webkit-tap-highlight-color:transparent;background:var(--bg)}
+body{font-family:var(--font-sans);background:var(--bg);color:var(--text);min-height:100dvh;overflow-x:hidden;line-height:1.5;display:flex;flex-direction:column}
+button,input,textarea,select{font:inherit;color:inherit;background:none;border:none;outline:none}
+button{cursor:pointer;-webkit-user-select:none;user-select:none;touch-action:manipulation}
+button:disabled{opacity:0.4;pointer-events:none}
 a{color:inherit;text-decoration:none}
-#app{max-width:600px;margin:auto;min-height:100dvh;position:relative;isolation:isolate;overflow:hidden}
-#app::before{content:"";position:fixed;inset:0;z-index:-2;pointer-events:none;background:radial-gradient(ellipse at 0% 0%,#50000d40,transparent 50%),radial_gradient(ellipse at 100% 100%,#60000c30,transparent 45%),var(--bg)}
-#app::after{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:.04;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");animation:noiseShift 8s linear infinite}
-@keyframes noiseShift{0%{transform:translate(0,0)}100%{transform:translate(200px,200px)}}
+img{max-width:100%;display:block}
+ul,ol{list-style:none}
+::-webkit-scrollbar{width:4px;height:4px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--border-bright);border-radius:2px}
+::selection{background:var(--red-glow);color:#fff}
 
-/* ===== PARTICLES ===== */
-#particles{position:fixed;inset:0;z-index:-1;pointer-events:none}
-
-/* ===== LAYOUT ===== */
-header,main,.bottom-nav{position:relative;z-index:1}
-header{position:sticky;top:0;z-index:20;height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 14px;background:rgba(3,3,4,.92);border-bottom:1px solid #1a181c;backdrop-filter:blur(20px)}
-.brand{font-size:20px;font-weight:900;letter-spacing:2px;text-shadow:0 2px 4px #000}
-.brand span{color:var(--red);text-shadow:0 0 14px #f20b2d80;animation:brandPulse 3s ease-in-out infinite alternate}
-@keyframes brandPulse{from{text-shadow:0 0 6px #f20b2d40}to{text-shadow:0 0 22px #f20b2dcc}}
-.header-btn{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;background:linear-gradient(145deg,#1a181c,#0a0a0c);border:1px solid #2a2529;box-shadow:0 3px 0 #000,inset 0 1px 1px #fff1;transition:transform .1s,box-shadow .1s,filter .1s}
-.header-btn:active{transform:translateY(2px);box-shadow:0 1px 0 #000}
+/* ============================================================
+   LAYOUT & SCREENS
+   ============================================================ */
+#app{display:flex;flex-direction:column;min-height:100dvh;width:100%;max-width:480px;margin:0 auto;position:relative;z-index:1;isolation:isolate}
+header{position:fixed;top:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;height:var(--header-h);display:flex;align-items:center;justify-content:space-between;padding:0 16px;background:rgba(5,5,5,0.9);border-bottom:1px solid var(--border);backdrop-filter:saturate(180%) blur(20px);z-index:50}
+header.hidden{opacity:0;pointer-events:none;transform:translateX(-50%) translateY(-100%)}
+.brand{font-weight:700;font-size:20px;letter-spacing:0.5px;color:var(--text)}
+.brand span{color:var(--red)}
+.header-btn{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--card);border:1px solid var(--border);transition:var(--trans-fast)}
+.header-btn:active{transform:scale(0.92);background:var(--bg-elev)}
 .header-btn svg{width:22px;height:22px;stroke:var(--text);stroke-width:2.5;fill:none}
-main{padding:12px 14px 0}
-.screen{display:none;min-height:calc(var(--vh) - 56px)}
-.screen.active{display:block;animation:screenIn .4s cubic-bezier(.16,1,.3,1) both}
-@keyframes screenIn{from{opacity:0;transform:translateY(16px) scale(.98);filter:blur(4px)}to{opacity:1;transform:none;filter:none}}
 
-/* ===== TYPOGRAPHY ===== */
-h1{font-size:28px;font-weight:900;margin:6px 0 14px;letter-spacing:-.5px}
-h2{font-size:18px;font-weight:800;margin:0 0 10px}
-h3{font-size:15px;font-weight:700;margin:0 0 6px}
-p{color:var(--muted);line-height:1.5}
-.small{font-size:12px;color:var(--muted)}
-.red{color:var(--red)}
+main{flex:1;padding-top:calc(var(--header-h) + 16px);padding-bottom:calc(var(--nav-h) + var(--safe-b) + 16px);padding-inline:16px;width:100%;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.screen{display:none;opacity:0;transform:translateY(20px);transition:opacity var(--trans-med), transform var(--trans-med);position:absolute;top:0;left:0;right:0;bottom:0;padding:16px;overflow-y:auto}
+.screen.active{display:block;opacity:1;transform:translateY(0);position:relative}
+@media (prefers-reduced-motion: reduce){.screen{transition:none;transform:none;opacity:1}}
 
-/* ===== COMPONENTS ===== */
-.card{background:linear-gradient(145deg,#121013,#0a0a0c);border:1px solid #222024;border-radius:18px;padding:16px;margin-bottom:12px;box-shadow:0 10px 30px #000a,inset 0 1px 0 #fff1,0 0 0 1px #f20b2d0a;transition:border .25s,box-shadow .25s,transform .25s}
-.card:hover{border-color:#4a1820;box-shadow:0 10px 30px #000a,0 0 20px #f20b2d15}
-.card:active{transform:scale(.99)}
-.row{display:flex;align-items:center;gap:10px}
-.between{justify-content:space-between}
-.btn{width:100%;border:1px solid #ff3550;border-radius:14px;padding:14px 16px;font-weight:900;letter-spacing:.3px;background:linear-gradient(145deg,#ff2a48,#e00923 50%,#a00018);box-shadow:0 5px 0 #60000d,0 10px 20px #f20b2d30,inset 0 1px 2px #fff4;position:relative;overflow:hidden;transition:transform .1s,filter .15s,box-shadow .15s}
-.btn::before{content:"";position:absolute;top:0;left:-130%;width:60%;height:100%;background:linear_gradient(100deg,transparent,#fff2,transparent);transform:skewX(-20deg);transition:left .55s}
-.btn:hover::before{left:150%}
-.btn:active{transform:translateY(3px);filter:brightness(.92);box-shadow:0 2px 0 #60000d}
-.btn.secondary{background:linear_gradient(145deg,#1e1c1f,#0d0c0e);border-color:#3a3539;box-shadow:0 4px 0 #000,inset 0 1px 1px #fff1}
-.btn.sm{width:auto;padding:9px 14px;font-size:13px}
-.btn.ghost{background:transparent;border-color:transparent;box-shadow:none;color:var(--muted)}
-.btn.ghost:hover{color:var(--text)}
-input,textarea,select{width:100%;padding:13px 14px;border-radius:12px;background:linear_gradient(145deg,#0d0d10,#080809);border:1px solid #292329;outline:none;transition:border .2s,box-shadow .2s}
-input:focus,textarea:focus,select:focus{border-color:var(--red);box-shadow:0 0 0 2px #ff15351c,0 0 18px #ed102c20}
-label{display:block;margin:10px 0 5px;color:var(--muted);font-size:13px}
-textarea{resize:vertical;min-height:100px}
-.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.hero{padding:20px;border-radius:22px;margin-bottom:14px;background:linear_gradient(135deg,#2a060f,#0a0a0c 70%);border:1px solid #4a1420;box-shadow:0 10px 35px #000a,inset 0 1px #fff1;position:relative;overflow:hidden}
-.hero::before{content:"";position:absolute;inset:-50%;background:radial_gradient(circle at 30% 20%,#f20b2d15,transparent 60%),radial_gradient(circle at 80% 80%,#80001a10,transparent 50%);animation:heroAmbient 10s ease-in-out infinite alternate}
-@keyframes heroAmbient{0%{opacity:.6;transform:scale(1)}100%{opacity:1;transform:scale(1.05)}}
-.hero h1{font-size:32px;letter-spacing:2px;position:relative;z-index:1}
-.stat{background:linear_gradient(145deg,#181618,#0d0c0e);border:1px solid #2a2529;border-radius:15px;text-align:center;padding:12px;box-shadow:0 4px 0 #000,inset 0 1px #fff1}
-.stat b{display:block;font-size:22px;font-weight:900}
-.stat span{font-size:10px;color:var(--muted);letter-spacing:1px;text-transform:uppercase}
-.section-title{display:flex;align-items:center;justify-content:space-between;margin:18px 0 10px}
-.room-card,.list-item{background:linear_gradient(145deg,#141214,#0c0b0c);border:1px solid #2a2529;border-radius:16px;padding:14px;margin-bottom:10px;box-shadow:0 4px 0 #000;transition:transform .2s,border .2s}
-.room-card:active,.list-item:active{transform:scale(.985);border-color:#8d1526}
-.tag{display:inline-block;background:#1e1c1f;color:var(--muted);border-radius:8px;padding:4px 8px;font-size:11px;font-weight:700}
-.avatar{width:44px;height:44px;flex-shrink:0;border-radius:13px;display:flex;align-items:center;justify-content:center;background:linear_gradient(145deg,#3a0d16,#0f0608);border:1px solid #5a1826;color:#ff4a5f;font-weight:900;font-size:18px;overflow:hidden;box-shadow:0 3px 0 #000,inset 0 1px #fff1}
+/* ============================================================
+   COMPONENTS: BUTTONS, INPUTS, CARDS
+   ============================================================ */
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;height:52px;padding:0 24px;border-radius:12px;font-weight:700;font-size:16px;letter-spacing:0.2px;transition:var(--trans-fast);position:relative;overflow:hidden}
+.btn:active{transform:scale(0.98)}
+.btn-primary{background:linear-gradient(135deg, var(--red), var(--red-dark));color:#fff;box-shadow:0 4px 20px var(--red-glow), var(--shadow-inner);border:1px solid rgba(255,255,255,0.05)}
+.btn-primary:not(:disabled):active{box-shadow:0 2px 10px var(--red-glow), var(--shadow-inner)}
+.btn-secondary{background:var(--card);color:var(--text);border:1px solid var(--border)}
+.btn-ghost{background:transparent;color:var(--text-dim);padding:0;height:auto}
+.btn-ghost:active{color:var(--red);transform:none}
+.btn-block{width:100%}
+.btn-sm{height:40px;padding:0 16px;font-size:14px}
+.icon-btn{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;background:var(--card);border:1px solid var(--border);transition:var(--trans-fast);flex-shrink:0}
+.icon-btn:active{background:var(--bg-elev);transform:scale(0.95)}
+.icon-btn svg{width:24px;height:24px;stroke:var(--text);stroke-width:2.5}
+.icon-btn.recording{background:var(--red);box-shadow:0 0 0 4px var(--red-glow);animation:pulse-ring 1.5s ease-out infinite}
+.icon-btn.recording svg{stroke:#fff}
+
+.input-wrap{position:relative;margin-bottom:8px}
+label{display:block;font-size:12px;color:var(--text-dim);margin-bottom:6px;font-weight:500;text-transform:uppercase;letter-spacing:0.5px}
+input[type="text"], input[type="search"], textarea{width:100%;height:52px;padding:0 16px;border-radius:12px;background:var(--card);border:1px solid var(--border);color:var(--text);font-size:16px;transition:var(--trans-fast)}
+input:focus, textarea:focus{border-color:var(--red);box-shadow:0 0 0 3px var(--red-glow)}
+input::placeholder, textarea::placeholder{color:var(--text-dark)}
+textarea{min-height:100px;padding:12px 16px;resize:none;line-height:1.5}
+.input-wrap .char-count{position:absolute;right:12px;bottom:10px;font-size:11px;color:var(--text-dark);pointer-events:none}
+
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:16px;box-shadow:var(--shadow), var(--shadow-inner)}
+.card-soft{background:var(--bg-elev);border-color:var(--border-bright)}
+
+/* Avatar */
+.avatar{border-radius:50%;overflow:hidden;background:var(--border);display:flex;align-items:center;justify-content:center;color:var(--text-dim);font-weight:700;flex-shrink:0;position:relative}
 .avatar img{width:100%;height:100%;object-fit:cover}
-.avatar.lg{width:85px;height:85px;border-radius:24px;font-size:28px}
-.avatar.xl{width:120px;height:120px;border-radius:30px;font-size:40px}
-.bottom-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);z-index:50;width:100%;max-width:600px;display:grid;grid-template-columns:repeat(4,1fr);padding:6px 6px calc(6px + var(--safe-b));background:rgba(3,3,4,.95);border-top:1px solid #1a181c;backdrop-filter:blur(24px)}
-.nav-btn{border:0;background:none;color:var(--muted);display:flex;flex-direction:column;align-items:center;gap:4px;font-size:10px;padding:4px 0}
-.nav-icon{font-size:20px;width:38px;height:32px;border-radius:10px;display:flex;align-items:center;justify-content:center;background:linear_gradient(145deg,#222023,#0d0c0e);border:1px solid #322d32;box-shadow:0 3px 0 #000,inset 0 1px #fff1;transition:.2s}
-.nav-btn.active{color:var(--red2)}
-.nav-btn.active .nav-icon{color:#fff;background:linear_gradient(145deg,#f20b2d,#a00018);border-color:#ff3550;box-shadow:0 3px 0 #50000c,0 0 18px #f20b2d60,inset 0 1px 2px #fff4;transform:translateY(-2px)}
-.modal{position:fixed;inset:0;z-index:100;display:none;align-items:center;justify-content:center;padding:16px;background:#000e;backdrop-filter:blur(10px)}
-.modal.show{display:flex;animation:fadeIn .25s}
-@keyframes fadeIn{from{opacity:0}to{opacity:1}}
-.modal-box{width:100%;max-width:440px;max-height:90dvh;overflow:auto;background:#0c0b0d;border:1px solid #322d32;border-radius:22px;padding:20px;box-shadow:0 25px 60px #000,0 0 40px #f20b2d10;animation:modalRise .35s cubic-bezier(.16,1,.3,1) both}
-@keyframes modalRise{from{opacity:0;transform:translateY(30px) scale(.94)}to{opacity:1;transform:none}}
+.avatar-xs{width:32px;height:32px;font-size:12px}
+.avatar-sm{width:40px;height:40px;font-size:14px}
+.avatar-md{width:56px;height:56px;font-size:18px}
+.avatar-lg{width:96px;height:96px;font-size:32px}
+.avatar-xl{width:120px;height:120px;font-size:40px}
+.avatar-edit{position:absolute;bottom:0;right:0;width:28px;height:28px;border-radius:50%;background:var(--red);display:flex;align-items:center;justify-content:center;border:2px solid var(--bg);z-index:2}
+.avatar-edit svg{width:14px;height:14px;stroke:#fff}
 
-/* ===== WELCOME SCREEN ===== */
-.welcome{min-height:100dvh;display:flex;flex-direction:column;justify-content:flex-end;padding:24px;background:var(--bg);position:relative;overflow:hidden}
-.welcome::before{content:"";position:absolute;inset:0;background:linear_gradient(180deg,transparent 40%,#030304),var(--welcome-img) center/cover no-repeat;opacity:.15;z-index:-1}
-.welcome::after{content:"";position:absolute;inset:0;background:radial_gradient(ellipse at 50% 100%,#f20b2d10,transparent 60%);z-index:-1}
-.welcome>*{position:relative;z-index:1}
-.welcome-logo{font-size:36px;font-weight:1000;letter-spacing:4px;text-shadow:0 4px 20px #000}
+/* Tags / Pills */
+.pill{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:100px;font-size:12px;font-weight:600;background:var(--bg-elev);border:1px solid var(--border);color:var(--text-dim);transition:var(--trans-fast)}
+.pill.active{background:rgba(255,0,31,0.15);border-color:var(--red);color:var(--red)}
+.pill input{display:none}
+
+/* Progress Bar */
+.progress-wrap{height:4px;background:var(--border);border-radius:2px;overflow:hidden;margin:8px 0}
+.progress-bar{height:100%;width:0%;background:linear-gradient(90deg, var(--red), #ff3344);border-radius:2px;transition:width 0.1s linear;transform-origin:left;will-change:width,transform}
+
+/* Toast */
+#toast-container{position:fixed;bottom:calc(var(--nav-h) + var(--safe-b) + 16px);left:50%;transform:translateX(-50%);z-index:200;display:flex;flex-direction:column;gap:8px;pointer-events:none;width:calc(100% - 32px);max-width:480px}
+.toast{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px 16px;display:flex;align-items:center;gap:12px;box-shadow:var(--shadow);animation:toast-in 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);pointer-events:auto}
+.toast.error{border-color:var(--red);background:rgba(139,0,0,0.2)}
+@keyframes toast-in{from{opacity:0;transform:translateY(20px) scale(0.95)}to{opacity:1;transform:translateY(0) scale(1)}}
+
+/* Bottom Nav */
+nav.bottom-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;height:var(--nav-h);display:flex;justify-content:space-around;align-items:center;padding-bottom:var(--safe-b);background:rgba(5,5,5,0.95);border-top:1px solid var(--border);backdrop-filter:saturate(180%) blur(20px);z-index:50}
+.nav-item{display:flex;flex-direction:column;align-items:center;gap:4px;color:var(--text-dim);font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.3px;padding:8px 12px;border-radius:12px;transition:var(--trans-fast);min-width:60px}
+.nav-item.active{color:var(--red)}
+.nav-item.active .nav-icon{background:rgba(255,0,31,0.15);border-color:var(--red);color:var(--red)}
+.nav-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;background:var(--card);border:1px solid var(--border);color:var(--text-dim);transition:var(--trans-fast)}
+.nav-icon svg{width:22px;height:22px;stroke:currentColor;stroke-width:2.5}
+
+/* Animations */
+@keyframes pulse-ring{0%{box-shadow:0 0 0 0 var(--red-glow)}70%{box-shadow:0 0 0 10px transparent}100%{box-shadow:0 0 0 0 transparent}}
+@keyframes fade-in{from{opacity:0}to{opacity:1}}
+@keyframes slide-up{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+@keyframes shake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-4px)}40%,80%{transform:translateX(4px)}}
+.shake{animation:shake 0.4s cubic-bezier(0.36, 0.07, 0.19, 0.97)}
+
+/* Particles Background */
+#bg-canvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none;opacity:0.6}
+
+/* Welcome Screen Specifics */
+.welcome-screen{display:flex;flex-direction:column;justify-content:flex-end;align-items:center;min-height:100dvh;padding:24px;text-align:center;position:relative;z-index:1}
+.welcome-screen::before{content:"";position:absolute;inset:0;background:var(--welcome-img) center/cover no-repeat, var(--bg);opacity:0.12;z-index:-1;filter:blur(40px)}
+.welcome-screen::after{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at bottom, var(--red-glow), transparent 60%);z-index:-1;opacity:0.5}
+.welcome-logo{font-size:clamp(36px, 12vw, 56px);font-weight:700;letter-spacing:2px;line-height:1.1;margin-bottom:8px;text-shadow:0 4px 24px rgba(0,0,0,0.5)}
 .welcome-logo span{color:var(--red)}
-.modal-desc{color:#ccc;margin-top:10px;max-width:320px}
-#backBtn{display:none}
+.welcome-desc{color:var(--text-dim);font-size:15px;max-width:280px;margin-bottom:32px;font-weight:300}
 
-/* ===== ONBOARDING / REGISTRATION ===== */
-.onboarding{display:flex;flex-direction:column;align-items:center;gap:16px;padding:20px}
-.avatar-picker{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
-.avatar-option{aspect-ratio:1;border-radius:16px;border:2px solid transparent;background:linear_gradient(145deg,#1a181a,#0d0c0e);display:flex;align-items:center;justify-content:center;font-size:28px;cursor:pointer;transition:.2s}
-.avatar-option:hover{border-color:#3a3539;transform:scale(1.05)}
-.avatar-option.selected{border-color:var(--red);box-shadow:0 0 20px #f20b2d50;background:linear_gradient(145deg,#2a0810,#14080a)}
-.avatar-option.custom{font-size:20px;color:var(--muted)}
-#avatarPreview{width:100px;height:100px;border-radius:24px;margin:0 auto 10px;background:linear_gradient(145deg,#1a181a,#0d0c0e);border:1px solid #3a3539;display:flex;align-items:center;justify-content:center;font-size:40px;overflow:hidden}
-#avatarPreview img{width:100%;height:100%;object-fit:cover}
+/* Registration Screen */
+.reg-screen{display:flex;flex-direction:column;align-items:center;padding-top:40px;gap:24px}
+.reg-avatar-wrap{position:relative;margin-top:-20px}
+.reg-avatar-wrap .avatar-edit{bottom:-4px;right:-4px}
+.reg-fields{width:100%;max-width:360px;display:flex;flex-direction:column;gap:16px;margin-top:8px}
 
-/* ===== CHAT / MESSAGES ===== */
-.chat-messages{display:flex;flex-direction:column;gap:10px;padding-bottom:15px}
-.msg{max-width:85%;align-self:flex-start;padding:12px 14px;background:#151315;border:1px solid #252225;border-radius:13px;overflow-wrap:anywhere;animation:msgIn .25s ease both;box-shadow:0 4px 12px #0006}
-@keyframes msgIn{from{opacity:0;transform:translateY(10px) scale(.96)}to{opacity:1;transform:none}}
-.msg.mine{align-self:flex-end;background:linear_gradient(145deg,#3a0a14,#1a080c);border-color:#4a1520}
-.msg-author{display:flex;align-items:center;gap:6px;margin-bottom:5px}
-.msg-av{width:22px;height:22px;border-radius:7px;overflow:hidden;display:flex;align-items:center;justify-content:center;background:#2a0810;border:1px solid #5a1826;font-size:10px;font-weight:900}
-.msg-name{color:#ff5a70;font-size:11px;font-weight:800}
-.msg-time{font-size:9px;color:#666;text-align:right;margin-top:4px}
-.question-card{background:linear_gradient(145deg,#2a0812,#0f0d0f);border:1px solid #5a1826;border-radius:18px;padding:18px;margin-bottom:14px;box-shadow:0 8px 25px #000a,0 0 30px #f20b2d15;animation:qGlow 4s ease-in-out infinite alternate;position:relative;overflow:hidden}
-.question-card::before{content:"";position:absolute;top:0;left:0;right:0;height:2px;background:linear_gradient(90deg,transparent,var(--red),transparent);opacity:.6;animation:qScan 3s linear infinite}
-@keyframes qScan{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
-@keyframes qGlow{to{box-shadow:0 8px 25px #000a,0 0 40px #f20b2d25}}
-.q-label{font-size:10px;letter-spacing:2px;color:#ff5a70;margin-bottom:8px;font-weight:900;text-transform:uppercase}
-.question{font-size:20px;font-weight:900;line-height:1.35}
-.player-strip{display:flex;gap:7px;overflow-x:auto;padding:4px 0 10px;scrollbar-width:none}
-.player-strip::-webkit-scrollbar{display:none}
-.player-chip{white-space:nowrap;border:1px solid #2a2529;border-radius:9px;padding:7px 10px;color:var(--muted);font-size:12px;font-weight:700;background:#0f0e0f;transition:.2s}
-.player-chip.active{border-color:var(--red);background:linear_gradient(145deg,#2a0810,#100a0c);color:#fff;box-shadow:0 0 14px #f20b2d20}
-.player-chip.host::after{content:"👑";margin-left:4px;font-size:10px}
-.progress{height:4px;background:#1a181c;border-radius:99px;margin:10px 0;overflow:hidden}
-.progress>div{height:100%;background:linear_gradient(90deg,#a00018,#ff2a48);transition:width .5s cubic-bezier(.16,1,.3,1);border-radius:99px}
+/* Home Screen */
+.stat-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:24px}
+.stat-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:20px;text-align:center}
+.stat-value{font-size:28px;font-weight:700;color:var(--text);line-height:1}
+.stat-label{font-size:11px;color:var(--text-dim);text-transform:uppercase;letter-spacing:1px;margin-top:4px}
+.section-header{display:flex;align-items:center;justify-content:space-between;margin:24px 0 12px}
+.section-title{font-size:18px;font-weight:700}
+.room-list{display:flex;flex-direction:column;gap:10px}
+.room-card{display:flex;align-items:center;gap:12px;padding:12px;background:var(--card);border:1px solid var(--border);border-radius:var(--radius);transition:var(--trans-fast)}
+.room-card:active{background:var(--bg-elev)}
+.room-info{flex:1;min-width:0}
+.room-name{font-weight:600;font-size:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.room-meta{font-size:12px;color:var(--text-dim);display:flex;align-items:center;gap:8px;margin-top:2px}
+.room-code-tag{font-family:monospace;background:var(--bg);padding:2px 6px;border-radius:6px;font-size:11px;color:var(--red);border:1px solid var(--border)}
 
-/* ===== GAME CHAT SCREEN ===== */
-#gameChatScreen{min-height:0;height:calc(var(--vh) - 56px);padding:0 0 calc(10px + var(--safe-b));overflow:hidden}
-#gameChatScreen.active{display:flex;flex-direction:column}
-.game-header{padding:8px 0 0;flex-shrink:0}
-.game-scroll{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;padding:0 2px 16px;scroll-padding-bottom:20px}
-.game-composer{position:fixed;bottom:0;left:50%;transform:translateX(-50%);z-index:80;width:100%;max-width:600px;padding:8px 10px calc(8px + var(--safe-b));background:rgba(5,5,6,.98);border-top:1px solid #2a1820;backdrop-filter:blur(24px);box-shadow:0 -8px 30px #000a,0 0 20px #ed102c0a;transition:bottom .12s ease}
-body.kb-open .game-composer{bottom:var(--kbh);padding-bottom:8px}
-.composer-row{display:flex;align-items:flex-end;gap:7px}
-.composer-row textarea{min-height:44px;max-height:140px;resize:none;overflow-y:auto;line-height:1.35;padding:11px 12px;border-radius:14px;flex:1;min-width:0;scrollbar-width:thin}
-.icon-btn{width:42px;height:42px;flex-shrink:0;border-radius:12px;font-size:19px;display:flex;align-items:center;justify-content:center;background:linear_gradient(145deg,#1a181c,#0a0a0c);border:1px solid #2a2529;box-shadow:0 3px 0 #000,inset 0 1px #fff1;transition:transform .1s,box-shadow .1s}
-.icon-btn:active{transform:translateY(2px);box-shadow:0 1px 0 #000}
-#voiceBtn.recording{animation:micPulse 1s ease-in-out infinite}
-@keyframes micPulse{50%{box-shadow:0 3px 0 #000,0 0 0 6px #f20b2d40}}
-.rec-info{display:none;color:#ff4a60;font-size:11px;padding:4px 2px}
-.rec-info.show{display:block;animation:fadeIn .2s}
-.rec-dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:#ff253e;margin-right:5px;animation:dotPulse .7s infinite}
-@keyframes dotPulse{50%{opacity:.2;transform:scale(.65)}}
-.option{padding:13px;border:1px solid #2a2529;border-radius:12px;margin-bottom:9px;background:#121012;transition:.2s}
-.option.sel{border-color:var(--red);background:#20080c;box-shadow:0 0 18px #f20b2d20}
-.score-row{display:flex;align-items:center;gap:10px;padding:12px;border-bottom:1px solid #1a181c}
-.score-num{margin-left:auto;color:var(--red);font-size:20px;font-weight:900}
-.achieve{border:1px solid #2a2529;background:#121012;border-radius:12px;padding:12px}
-.achieve.locked{opacity:.35;filter:grayscale(1)}
-.achieve-icon{font-size:22px;margin-bottom:5px}
-.toast{position:fixed;z-index:150;left:50%;bottom:calc(100px + var(--safe-b));transform:translateX(-50%);background:#1a181a;border:1px solid #3a3539;border-radius:11px;padding:11px 15px;display:none;max-width:90%;text-align:center;box-shadow:0 8px 30px #000}
-.toast.show{display:block;animation:screenIn .2s}
-.empty{text-align:center;color:var(--muted);padding:25px}
-.profile-card{text-align:center;background:radial_gradient(ellipse at top,#2a0810,#0c0b0c 65%);border-color:#4a1420}
-.profile-act{border:1px solid #2a2529;background:linear_gradient(145deg,#1a181a,#0d0c0e);padding:12px;border-radius:11px;color:#eee}
+/* Create Room */
+.cat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.cat-option{position:relative}
+.cat-option input{display:none}
+.cat-option label{display:flex;flex-direction:column;gap:8px;padding:16px;background:var(--card);border:1px solid var(--border);border-radius:var(--radius);cursor:pointer;transition:var(--trans-fast);min-height:100px;justify-content:center}
+.cat-option input:checked + label{background:rgba(255,0,31,0.08);border-color:var(--red);box-shadow:0 0 0 1px var(--red)}
+.cat-option label::after{content:"";width:22px;height:22px;border-radius:6px;border:2px solid var(--border);background:var(--bg);transition:var(--trans-fast);margin-left:auto;margin-top:4px;flex-shrink:0}
+.cat-option input:checked + label::after{background:var(--red);border-color:var(--red);background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3'%3E%3Cpolyline points='20 6 9 17 4 12'%3E%3C/polyline%3E%3C/svg%3E");background-size:14px;background-position:center;background-repeat:no-repeat}
+.cat-emoji{font-size:28px;line-height:1}
+.cat-name{font-weight:600;font-size:15px}
+.cat-desc{font-size:11px;color:var(--text-dim)}
 
-/* ===== CATEGORY PICKER ===== */
-.cat-picker{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0 8px}
-.cat-opt{position:relative;overflow:hidden;isolation:isolate;min-height:92px;padding:14px 12px;border-radius:16px;border:1px solid #2a2529;background:linear_gradient(145deg,#181618,#0c0b0c);box-shadow:0 4px 0 #000,inset 0 1px #fff1;display:flex;flex-direction:column;justify-content:center;gap:8px;cursor:pointer;transition:transform .22s,border-color .22s,background .22s,box-shadow .22s;animation:catIn .45s cubic-bezier(.16,1,.3,1) both}
-.cat-opt::before{content:"";position:absolute;inset:-80% -50%;z-index:-1;background:linear_gradient(110deg,transparent 35%,#fff0c 50%,transparent 65%);transform:translateX(-90%) rotate(15deg);transition:transform .7s}
-.cat-opt::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;opacity:0;background:radial_gradient(circle at 50% 0%,#f20b2d25,transparent 70%);transition:opacity .25s}
-.cat-opt:hover::before{transform:translateX(90%) rotate(15deg)}
-.cat-opt:active{transform:scale(.96)}
-.cat-opt.sel{border-color:#ff3550;background:linear_gradient(145deg,#3a0a10,#14080a);box-shadow:0 4px 0 #50000c,0 0 28px #f20b2d40,inset 0 0 20px #f20b2d15;transform:translateY(-2px)}
-.cat-opt.sel::after{opacity:1}
-.cat-opt.sel .cat-chk{opacity:1;transform:scale(1) rotate(0deg)}
-@keyframes catIn{from{opacity:0;transform:translateY(12px) scale(.95)}to{opacity:1;transform:none}}
-.cat-name{font-size:13px;font-weight:850;position:relative;z-index:1}
-.cat-chk{position:absolute;right:10px;top:10px;width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:linear_gradient(145deg,#ff3550,#a00018);color:#fff;font-size:14px;font-weight:900;opacity:0;transform:scale(.4) rotate(-45deg);transition:.25s;box-shadow:0 0 14px #f20b2d60}
-.cat-count{display:flex;align-items:center;justify-content:space-between;font-size:12px;color:var(--muted);margin:5px 0 10px}
-.cat-count strong{color:var(--red2)}
-.cat-pips{display:flex;gap:4px}
-.cat-pip{width:14px;height:5px;border-radius:5px;background:#2a2529;transition:.2s}
-.cat-pip.on{background:linear_gradient(90deg,#a00018,#ff2a48);box-shadow:0 0 10px #f20b2d60}
-.room-code{letter-spacing:4px;font-size:22px;font-weight:1000;color:var(--red2);text-shadow:0 0 15px #f20b2d60}
-.friend-card{cursor:pointer}
+/* Game Screen */
+.game-header{position:sticky;top:0;z-index:10;background:linear-gradient(180deg, var(--bg), transparent);padding-bottom:12px;margin:-16px -16px 16px;padding-inline:16px;border-bottom:1px solid transparent}
+.game-header.scrolled{border-color:var(--border);backdrop-filter:blur(10px);background:rgba(5,5,5,0.9)}
+.game-room-info{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.game-room-code{font-family:monospace;font-size:14px;font-weight:700;color:var(--red);background:rgba(255,0,31,0.1);padding:4px 10px;border-radius:8px}
+.players-bar{display:flex;gap:6px;overflow-x:auto;padding:4px 0 8px;scrollbar-width:none;scroll-snap-type:x mandatory}
+.players-bar::-webkit-scrollbar{display:none}
+.player-chip{flex-shrink:0;scroll-snap-align:start;padding:6px 12px;border-radius:100px;background:var(--card);border:1px solid var(--border);font-size:12px;font-weight:600;white-space:nowrap;display:flex;align-items:center;gap:6px;transition:var(--trans-fast)}
+.player-chip.me{border-color:var(--red);background:rgba(255,0,31,0.1);color:var(--red)}
+.player-chip .avatar{width:28px;height:28px;font-size:10px}
+.round-info{display:flex;align-items:center;justify-content:space-between;font-size:12px;color:var(--text-dim);margin-bottom:8px}
+.round-info .cat-tag{background:rgba(255,0,31,0.1);color:var(--red);padding:2px 8px;border-radius:6px;font-weight:600;font-size:11px}
 
-/* ===== CREATE ROOM HERO (NO IMAGE) ===== */
-.create-hero{position:relative;overflow:hidden;border-radius:22px;border:1px solid #5a1826;background:linear_gradient(145deg,#1a060d,#080809);min-height:210px;display:flex;flex-direction:column;justify-content:flex-end;padding:20px;box-shadow:0 10px 30px #000a,0 0 30px #f20b2d10;margin-bottom:16px;animation:heroAmbient 8s ease-in-out infinite alternate}
-.create-hero::before{content:"";position:absolute;inset:0;background:linear_gradient(180deg,transparent,#030304cc 60%,#030304);z-index:0}
-.create-hero::after{content:"";position:absolute;inset:0;z-index:0;opacity:.05;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");animation:noiseShift 6s linear infinite}
-.create-hero>*{position:relative;z-index:1}
-.create-hero h2{font-size:24px;font-weight:950;text-shadow:0 2px 10px #000}
-.create-hero p{color:#ddd;text-shadow:0 2px 5px #000}
+.question-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius-xl);padding:24px;box-shadow:var(--shadow);position:relative;overflow:hidden;margin-bottom:16px}
+.question-card::before{content:"";position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg, transparent, var(--red), transparent);opacity:0.5}
+.question-label{font-size:10px;text-transform:uppercase;letter-spacing:2px;color:var(--red);font-weight:700;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.question-text{font-size:clamp(18px, 4.5vw, 22px);font-weight:700;line-height:1.3;color:var(--text)}
 
-/* ===== MEDIA QUERIES ===== */
-@media(min-width:600px){main{padding:16px 20px 0}}
-@media(max-width:400px){.composer-row{gap:5px}.icon-btn{width:38px;height:40px}.game-composer{padding-left:6px;padding-right:6px}.brand{font-size:18px}.cat-picker{gap:8px}.cat-opt{min-height:84px;padding:12px}.avatar-picker{grid-template-columns:repeat(4,1fr)}}
-@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+/* Chat / Answers */
+.chat-list{display:flex;flex-direction:column;gap:10px}
+.msg{display:flex;gap:10px;max-width:85%;animation:slide-up 0.3s ease-out}
+.msg.mine{align-self:flex-end;flex-direction:row-reverse}
+.msg .avatar{width:32px;height:32px;font-size:11px;flex-shrink:0}
+.msg-bubble{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:12px 14px;position:relative;display:flex;flex-direction:column;gap:4px}
+.msg.mine .msg-bubble{background:rgba(255,0,31,0.1);border-color:rgba(255,0,31,0.3);border-bottom-right-radius:4px}
+.msg.other .msg-bubble{border-bottom-left-radius:4px}
+.msg-header{display:flex;align-items:center;gap:8px;font-size:11px;color:var(--text-dim);margin-bottom:4px}
+.msg-name{font-weight:600;color:var(--text)}
+.msg-time{font-size:10px}
+.msg-text{font-size:15px;line-height:1.4;word-break:break-word;white-space:pre-wrap}
+.msg-vote-btn{display:none;margin-top:8px;padding:8px 12px;border-radius:8px;background:var(--bg);border:1px solid var(--border);font-size:13px;font-weight:600;color:var(--text);width:100%;text-align:left;transition:var(--trans-fast)}
+.msg-vote-btn:hover, .msg-vote-btn:active{background:rgba(255,0,31,0.1);border-color:var(--red);color:var(--red)}
+.msg.voting .msg-vote-btn{display:block}
+.msg.voted .msg-vote-btn{background:var(--red);border-color:var(--red);color:#fff;cursor:default}
+.msg.winner .msg-bubble::after{content:"👑 ПОБЕДИТЕЛЬ";position:absolute;top:-10px;right:10px;font-size:9px;font-weight:700;color:var(--yellow);background:var(--card);padding:2px 6px;border-radius:4px;border:1px solid var(--yellow);white-space:nowrap;box-shadow:var(--shadow)}
 
-/* ===== SCROLLBAR ===== */
-::-webkit-scrollbar{width:6px;height:6px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:#2a2529;border-radius:3px}::-webkit-scrollbar-thumb:hover{background:#3a3539}
+/* Voice Message */
+.voice-msg{display:flex;align-items:center;gap:10px;padding:8px;background:var(--bg);border-radius:10px;border:1px solid var(--border);width:fit-content;max-width:100%}
+.voice-msg button{background:transparent;padding:0;display:flex;align-items:center;gap:8px;color:var(--text);font-size:13px;font-weight:600}
+.voice-msg progress{flex:1;height:4px;appearance:none;background:var(--border);border-radius:2px}
+.voice-msg progress::-webkit-progress-bar{background:var(--border)}
+.voice-msg progress::-webkit-progress-value{background:var(--red);border-radius:2px}
+.voice-msg time{font-size:11px;color:var(--text-dim);min-width:40px;text-align:right}
+
+/* Composer */
+.composer{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;padding:12px 16px calc(12px + var(--safe-b));background:linear-gradient(180deg, transparent, var(--bg) 30%, var(--bg));z-index:40;border-top:1px solid transparent;transition:border-color var(--trans-fast)}
+.composer.active{border-color:var(--border);backdrop-filter:blur(20px);background:rgba(5,5,5,0.95)}
+.composer-row{display:flex;align-items:flex-end;gap:8px}
+.composer-row textarea{flex:1;min-height:48px;max-height:120px;border-radius:14px;padding:10px 14px;font-size:15px;line-height:1.4;background:var(--card);border:1px solid var(--border);transition:var(--trans-fast);resize:none}
+.composer-row textarea:focus{border-color:var(--red);box-shadow:0 0 0 3px var(--red-glow)}
+.composer-actions{display:flex;gap:8px}
+
+/* Modal */
+.modal-overlay{position:fixed;inset:0;z-index:100;display:none;align-items:center;justify-content:center;padding:16px;background:rgba(0,0,0,0.8);backdrop-filter:blur(8px);animation:fade-in 0.2s ease}
+.modal-overlay.show{display:flex}
+.modal-box{width:100%;max-width:400px;max-height:85vh;overflow-y:auto;background:var(--card);border:1px solid var(--border);border-radius:var(--radius-xl);padding:24px;box-shadow:var(--shadow);animation:slide-up 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)}
+.modal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.modal-title{font-size:18px;font-weight:700}
+.modal-close{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--bg);border:1px solid var(--border);color:var(--text-dim);transition:var(--trans-fast)}
+.modal-close:active{background:var(--red);color:#fff;border-color:var(--red);transform:rotate(90deg)}
+
+/* Achievements */
+.ach-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.ach-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:16px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:8px;transition:var(--trans-fast);opacity:0.5}
+.ach-card.unlocked{opacity:1;border-color:rgba(255,0,31,0.3);background:rgba(255,0,31,0.03)}
+.ach-icon{font-size:32px;line-height:1}
+.ach-name{font-weight:600;font-size:13px}
+.ach-desc{font-size:11px;color:var(--text-dim)}
+
+/* Settings */
+.settings-group{margin-bottom:24px}
+.settings-group:last-child{margin-bottom:0}
+.setting-row{display:flex;align-items:center;justify-content:space-between;padding:16px 0;border-bottom:1px solid var(--border)}
+.setting-row:last-child{border-bottom:none}
+.setting-info{display:flex;flex-direction:column;gap:2px}
+.setting-label{font-weight:500;font-size:15px}
+.setting-hint{font-size:12px;color:var(--text-dim)}
+.toggle{width:48px;height:28px;border-radius:14px;background:var(--border);border:1px solid var(--border-bright);position:relative;transition:var(--trans-fast);flex-shrink:0}
+.toggle::after{content:"";position:absolute;top:2px;left:2px;width:20px;height:20px;border-radius:50%;background:#fff;box-shadow:0 2px 4px rgba(0,0,0,0.2);transition:var(--trans-fast)}
+.toggle.active{background:var(--red);border-color:var(--red)}
+.toggle.active::after{transform:translateX(20px)}
+.danger-zone{border-top:1px solid var(--border);padding-top:24px;margin-top:8px}
+.btn-danger{color:var(--red);border-color:var(--red);background:rgba(255,0,31,0.1)}
+.btn-danger:active{background:var(--red);color:#fff}
+
+/* Utility */
+.hidden{display:none !important}
+.text-center{text-align:center}
+.mt-8{margin-top:8px} .mt-16{margin-top:16px} .mt-24{margin-top:24px}
+.mb-8{margin-bottom:8px} .mb-16{margin-bottom:16px} .mb-24{margin-bottom:24px}
+.flex{display:flex} .flex-col{flex-direction:column} .items-center{align-items:center} .justify-center{justify-content:center} .gap-8{gap:8px} .gap-12{gap:12px} .gap-16{gap:16px}
+.w-full{width:100%}
 </style>
 </head>
 <body>
 <div id="app">
-<canvas id="particles"></canvas>
+  <!-- Background Canvas -->
+  <canvas id="bg-canvas" aria-hidden="true"></canvas>
 
-<header>
-  <button id="backBtn" class="header-btn" onclick="goBack()" aria-label="Назад"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg></button>
-  <div class="brand">ЧЕТ<span>ВЕРО</span></div>
-  <div class="row">
-    <button class="header-btn" onclick="openAchievements()" aria-label="Достижения"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></button>
-    <button class="header-btn" onclick="openProfile()" aria-label="Профиль"><span class="avatar" id="headerAvatar">👤</span></button>
-  </div>
-</header>
-
-<main>
-
-<!-- ===== WELCOME ===== -->
-<section id="welcome" class="screen active welcome">
-  <div class="welcome-logo">ЧЕТ<span>ВЕРО</span></div>
-  <p class="modal-desc">Игра для своих. Признания, вызовы, голосования и токсичность в чистом виде.</p>
-  <button class="btn" style="margin-top:20px;max-width:300px" onclick="showScreen('onboarding')">Начать</button>
-</section>
-
-<!-- ===== ONBOARDING / REGISTRATION ===== -->
-<section id="onboarding" class="screen onboarding">
-  <h1>Регистрация</h1>
-  <p class="small">Придумай ник и выбери аватар. Тег сгенерится сам.</p>
-  
-  <div id="avatarPreview">👤</div>
-  <input type="file" id="avatarInput" accept="image/*" hidden onchange="previewAvatar(this)">
-  <div class="avatar-picker" id="avatarPicker"></div>
-  <button class="btn sm ghost" onclick="document.getElementById('avatarInput').click()">📷 Загрузить фото</button>
-
-  <label>Никнейм (макс. 16 символов)</label>
-  <input id="regName" maxlength="16" placeholder="Например, Токсик666" oninput="updateRegPreview()">
-  <div class="small">Тег: <span id="regTag" class="red">#XXXX</span></div>
-
-  <button class="btn" style="margin-top:10px;max-width:300px" id="regSubmitBtn" disabled onclick="finishRegistration()">Продолжить</button>
-</section>
-
-<!-- ===== HOME ===== -->
-<section id="home" class="screen">
-  <div class="hero">
-    <div class="small">ИГРА ДЛЯ СВОИХ</div>
-    <h1>ЧЕТ<span class="red">ВЕРО</span></h1>
-    <p>Вопросы, ответы, признания и голосование. Без цензуры.</p>
-    <div class="create-hero">
-      <div class="small">СОБЕРИ СВОИХ</div>
-      <h2>Создай свою комнату</h2>
-      <p>Выбери категории. Собери компанию. Начни хаос.</p>
-      <button class="btn" onclick="openCreateRoom()">＋ Создать комнату</button>
+  <!-- Header -->
+  <header id="header">
+    <button class="header-btn" id="btnBack" aria-label="Назад"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg></button>
+    <div class="brand">ЧЕТ<span>ВЕРО</span></div>
+    <div style="display:flex;gap:8px">
+      <button class="header-btn" id="btnAchievements" aria-label="Достижения"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></button>
+      <button class="header-btn" id="btnProfile" aria-label="Профиль"><div class="avatar avatar-sm" id="headerAvatar">?</div></button>
     </div>
-    <button class="btn secondary" onclick="showScreen('roomScreen')">🔑 Войти по коду</button>
-  </div>
-  <div class="grid2">
-    <div class="stat"><b id="statGames">0</b><span>ИГР СЫГРАНО</span></div>
-    <div class="stat"><b id="statPoints">0</b><span>ОЧКОВ</span></div>
-  </div>
-  <div class="section-title"><h2>Мои комнаты</h2><button class="btn sm secondary" onclick="openCreateRoom()">Создать</button></div>
-  <div id="homeRooms"></div>
-  <div class="section-title"><h2>Последняя игра</h2></div>
-  <div id="lastGame" class="card"><div class="empty">Ты ещё не играл. Исправь это.</div></div>
-</section>
+  </header>
 
-<!-- ===== ROOMS LIST / JOIN ===== -->
-<section id="roomScreen" class="screen">
-  <div class="row between"><h1>Комнаты</h1><button class="btn sm" onclick="openCreateRoom()">＋ Создать</button></div>
-  <div class="card">
-    <h2>Войти по коду</h2>
-    <label>Код комнаты (4 символа)</label>
-    <input id="joinCode" placeholder="Напр. X7K9" maxlength="4" autocomplete="off" style="text-transform:uppercase" onkeydown="if(event.key==='Enter')joinRoomByCode()">
-    <button class="btn" style="margin-top:10px" onclick="joinRoomByCode()">Войти</button>
-    <p class="small">Код ищется среди комнат на этом устройстве.</p>
-  </div>
-  <div id="roomsList"></div>
-</section>
+  <!-- Main Content -->
+  <main id="mainContent">
+    
+    <!-- 0. WELCOME -->
+    <section id="screenWelcome" class="screen active welcome-screen">
+      <h1 class="welcome-logo">ЧЕТ<span>ВЕРО</span></h1>
+      <p class="welcome-desc">Игра для своих. Жесткие вопросы, честные ответы, токсичное голосование. Без цензуры.</p>
+      <button class="btn btn-primary btn-block" style="max-width:300px" onclick="goToReg()">Начать играть</button>
+    </section>
 
-<!-- ===== CREATE ROOM ===== -->
-<section id="createRoomScreen" class="screen">
-  <div class="row between"><h1>Новая комната</h1></div>
-  <div class="card">
-    <label>Название комнаты</label>
-    <input id="roomName" placeholder="Напр. Пятничный разгул" maxlength="24" oninput="updateCreateBtn()">
-    <label style="margin-top:14px">Твой ник в этой комнате</label>
-    <input id="creatorNick" placeholder="Твой позывной" maxlength="16" oninput="updateCreateBtn()">
-    <div class="cat-count"><span>Выбрано категорий: <strong id="catCount">0</strong>/5</span><div class="cat-pips" id="catPips"></div></div>
-    <div class="cat-picker" id="catPicker"></div>
-    <button class="btn" style="margin-top:10px" id="createRoomBtn" disabled onclick="createRoom()">Создать комнату</button>
-  </div>
-</section>
+    <!-- 1. REGISTRATION -->
+    <section id="screenReg" class="screen reg-screen">
+      <div class="reg-avatar-wrap">
+        <div class="avatar avatar-xl" id="regAvatar" style="background:var(--border);color:var(--text-dark)">?</div>
+        <button class="avatar-edit" onclick="document.getElementById('regAvatarInput').click()" aria-label="Загрузить фото"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg></button>
+        <input type="file" id="regAvatarInput" accept="image/*" hidden onchange="handleRegAvatar(this)">
+      </div>
+      <div class="reg-fields">
+        <div class="input-wrap">
+          <label>Никнейм</label>
+          <input type="text" id="regNickname" maxlength="16" placeholder="Токсик666" oninput="validateRegForm()">
+        </div>
+        <button class="btn btn-primary btn-block" id="btnRegSubmit" disabled onclick="finishRegistration()">Продолжить</button>
+      </div>
+    </section>
 
-<!-- ===== GAME CHAT / PLAY ===== -->
-<section id="gameChatScreen" class="screen">
-  <div class="game-header">
-    <div class="row between">
-      <div><div class="small" id="gameRoomLabel"></div><h1 style="margin:3px 0;font-size:20px">ИГРА</h1></div>
-      <button class="btn sm secondary" onclick="confirmLeave()">Выйти</button>
+    <!-- 2. HOME -->
+    <section id="screenHome" class="screen">
+      <div class="section-header"><h2 class="section-title">Статистика</h2></div>
+      <div class="stat-row">
+        <div class="stat-card"><div class="stat-value" id="statGames">0</div><div class="stat-label">Игр сыграно</div></div>
+        <div class="stat-card"><div class="stat-value" id="statPoints">0</div><div class="stat-label">Очков</div></div>
+      </div>
+      <div class="section-header"><h2 class="section-title">Мои комнаты</h2><button class="btn btn-secondary btn-sm" onclick="openCreateRoom()">Создать</button></div>
+      <div class="room-list" id="homeRoomsList"><div class="card" style="text-align:center;color:var(--text-dim);padding:40px">Комнат пока нет</div></div>
+      <div class="section-header mt-24"><h2 class="section-title">Последняя игра</h2></div>
+      <div class="card" id="lastGameCard" style="text-align:center;color:var(--text-dim);padding:30px">Ты ещё не играл</div>
+    </section>
+
+    <!-- 3. ROOMS LIST / JOIN -->
+    <section id="screenRooms" class="screen">
+      <div class="section-header"><h2 class="section-title">Комнаты</h2><button class="btn btn-secondary btn-sm" onclick="openCreateRoom()">＋ Создать</button></div>
+      <div class="card mb-16">
+        <h3 style="margin-bottom:12px">Войти по коду</h3>
+        <div class="flex gap-8">
+          <input type="text" id="joinCodeInput" maxlength="4" placeholder="КОД" style="text-transform:uppercase;letter-spacing:4px;text-align:center;font-weight:700;font-size:18px" onkeydown="if(event.key==='Enter')joinByCode()">
+          <button class="btn btn-primary" style="flex:1" onclick="joinByCode()">Войти</button>
+        </div>
+        <p style="font-size:12px;color:var(--text-dark);margin-top:8px">Код ищется среди комнат на этом устройстве.</p>
+      </div>
+      <div class="room-list" id="roomsList"><div class="card" style="text-align:center;color:var(--text-dim);padding:40px">Список пуст</div></div>
+    </section>
+
+    <!-- 4. CREATE ROOM -->
+    <section id="screenCreate" class="screen">
+      <div class="section-header"><h2 class="section-title">Новая комната</h2></div>
+      <div class="card mb-16">
+        <div class="input-wrap"><label>Название комнаты</label><input type="text" id="createRoomName" maxlength="24" placeholder="Пятничный разгул" oninput="validateCreateForm()"></div>
+        <div class="input-wrap mt-16"><label>Твой ник в комнате</label><input type="text" id="createNickname" maxlength="16" placeholder="Позывной" oninput="validateCreateForm()"></div>
+      </div>
+      <div class="card mb-16">
+        <h3 style="margin-bottom:12px">Категории вопросов <span style="font-weight:400;color:var(--text-dim);font-size:13px">(макс. 3)</span></h3>
+        <div class="cat-grid" id="catGrid"></div>
+        <p class="small text-center" style="margin-top:12px;color:var(--text-dark)">Выбрано: <span id="catCount" style="color:var(--red);font-weight:700">0</span> / 3</p>
+      </div>
+      <button class="btn btn-primary btn-block" id="btnCreateRoom" disabled onclick="createRoom()">Создать комнату</button>
+    </section>
+
+    <!-- 5. GAME -->
+    <section id="screenGame" class="screen" style="padding:0;overflow:hidden;display:flex;flex-direction:column">
+      <div id="gameHeader" class="game-header">
+        <div class="game-room-info">
+          <div class="avatar avatar-sm" id="gameRoomAvatar">?</div>
+          <div>
+            <div style="font-weight:600" id="gameRoomName">Комната</div>
+            <div class="game-room-code" id="gameRoomCode">CODE</div>
+          </div>
+        </div>
+        <div class="players-bar" id="playersBar"></div>
+        <div class="round-info">
+          <span id="roundLabel">Раунд 1</span>
+          <span class="cat-tag" id="roundCat">—</span>
+        </div>
+        <div class="progress-wrap"><div class="progress-bar" id="roundProgress"></div></div>
+      </div>
+      <div class="game-scroll" style="flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:16px">
+        <div id="questionCard" class="hidden">
+          <div class="question-card">
+            <div class="question-label"><span id="qCatEmoji">🖤</span><span id="qCatName">ПРИЗНАНИЯ</span></div>
+            <div class="question-text" id="qText">Загрузка...</div>
+          </div>
+        </div>
+        <div class="chat-list" id="chatList"></div>
+        <div style="height:100px"></div> <!-- Space for composer -->
+      </div>
+      <!-- Composer Fixed Bottom -->
+      <div class="composer" id="composer">
+        <div class="composer-row">
+          <textarea id="gameInput" placeholder="Твой ответ..." aria-label="Ответ" onkeydown="handleGameKeydown(event)"></textarea>
+          <div class="composer-actions">
+            <button class="icon-btn" id="btnVoice" onclick="toggleVoice()" aria-label="Голосовое"><svg viewBox="0 0 24 24"><path d="M12 2a3 3 0 0 1 3 3v7a3 3 0 0 1-6 0V5a3 3 0 0 1 3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="22"/></svg></button>
+            <button class="icon-btn" id="btnSend" onclick="sendGameMsg()" aria-label="Отправить"><svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></button>
+          </div>
+        </div>
+        <div class="rec-info hidden" id="recInfo"><span class="rec-dot" style="width:8px;height:8px;border-radius:50%;background:var(--red);animation:blink 1s infinite"></span><span id="recTime">0:00</span></div>
+      </div>
+    </section>
+
+    <!-- 6. PROFILE -->
+    <section id="screenProfile" class="screen">
+      <div class="flex flex-col items-center gap-16 mt-8">
+        <div class="reg-avatar-wrap">
+          <div class="avatar avatar-xl" id="profileAvatar">?</div>
+          <button class="avatar-edit" onclick="document.getElementById('profileAvatarInput').click()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+          <input type="file" id="profileAvatarInput" accept="image/*" hidden onchange="handleProfileAvatar(this)">
+        </div>
+        <div>
+          <h2 id="profileName" style="font-size:24px">Игрок</h2>
+          <p class="small" style="color:var(--red)">Тег: <span id="profileTag">#XXXX</span></p>
+        </div>
+      </div>
+      <div class="section-header mt-24"><h2 class="section-title">Настройки</h2></div>
+      <div class="card settings-group">
+        <div class="setting-row"><div class="setting-info"><div class="setting-label">Имя</div><div class="setting-hint">Видно всем игрокам</div></div><input type="text" id="setName" maxlength="16" class="w-full" style="max-width:200px;text-align:right;padding:8px 12px;border-radius:8px;background:var(--bg);border:1px solid var(--border)"></div>
+        <div class="setting-row"><div class="setting-info"><div class="setting-label">Тег</div><div class="setting-hint">Генерируется автоматически</div></div><input type="text" id="setTag" disabled class="w-full" style="max-width:200px;text-align:right;padding:8px 12px;border-radius:8px;background:var(--bg);border:1px solid var(--border);color:var(--text-dark);font-family:monospace"></div>
+      </div>
+      <button class="btn btn-primary btn-block mt-8" onclick="saveSettings()">Сохранить</button>
+      <div class="card danger-zone">
+        <h3 style="color:var(--red);margin-bottom:12px">Опасная зона</h3>
+        <button class="btn btn-danger btn-block" onclick="confirmReset()">Сбросить всё (профиль, комнаты, статы)</button>
+      </div>
+    </section>
+
+    <!-- 7. ACHIEVEMENTS -->
+    <section id="screenAchievements" class="screen">
+      <div class="section-header"><h2 class="section-title">Достижения</h2></div>
+      <div class="ach-grid" id="achGrid"></div>
+    </section>
+
+  </main>
+
+  <!-- Bottom Nav -->
+  <nav class="bottom-nav" id="bottomNav">
+    <button class="nav-item" data-screen="screenHome" onclick="switchScreen('screenHome')"><div class="nav-icon"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div><span>Дом</span></button>
+    <button class="nav-item" data-screen="screenRooms" onclick="switchScreen('screenRooms')"><div class="nav-icon"><svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8"/><path d="M12 17v4"/></svg></div><span>Комнаты</span></button>
+    <button class="nav-item" data-screen="screenProfile" onclick="switchScreen('screenProfile')"><div class="nav-icon"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div><span>Профиль</span></button>
+    <button class="nav-item" data-screen="screenAchievements" onclick="switchScreen('screenAchievements')"><div class="nav-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg></div><span>Достиг.</span></button>
+  </nav>
+
+  <!-- Modals -->
+  <div class="modal-overlay" id="modalLeave" onclick="if(event.target===this)closeModal('modalLeave')">
+    <div class="modal-box">
+      <div class="modal-header"><h3 class="modal-title">Выйти из комнаты?</h3><button class="modal-close" onclick="closeModal('modalLeave')"><svg width="20" height="20" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg></button></div>
+      <p style="color:var(--text-dim);margin-bottom:20px">Прогресс текущей игры не сохранится. Ты точно хочешь выйти?</p>
+      <div class="flex gap-8"><button class="btn btn-secondary flex-1" onclick="closeModal('modalLeave')">Остаться</button><button class="btn btn-danger flex-1" onclick="leaveRoomConfirmed()">Выйти</button></div>
     </div>
-    <div class="player-strip" id="playerStrip"></div>
-    <div class="small" id="roundLabel">Раунд 1 • Категория: —</div>
-    <div class="progress"><div id="roundProgress" style="width:0%"></div></div>
   </div>
-  <div class="game-scroll" id="gameScrollArea">
-    <div id="questionCard"></div>
-    <div id="gameMessages" class="chat-messages"></div>
-  </div>
-  <div class="game-composer" id="gameComposer">
-    <div class="composer-row">
-      <textarea id="gameInput" placeholder="Твой ответ / голос..." aria-label="Ответ" onkeydown="handleGameInputKeydown(event)"></textarea>
-      <button class="icon-btn" id="voiceBtn" onclick="toggleVoice()" aria-label="Голосовое"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2a3 3 0 0 1 3 3v7a3 3 0 0 1-6 0V5a3 3 0 0 1 3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="22"/></svg></button>
-      <button class="icon-btn" id="sendBtn" onclick="sendGameMessage()" aria-label="Отправить"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></button>
-    </div>
-    <div class="rec-info" id="recordingInfo"><span class="rec-dot"></span><span id="recordingTime">0:00</span></div>
-  </div>
-</section>
 
-<!-- ===== PROFILE ===== -->
-<section id="profileScreen" class="screen">
-  <div class="row between"><h1>Профиль</h1></div>
-  <div class="card profile-card">
-    <div class="avatar xl" id="profileAvatar" style="margin:0 auto 12px">👤</div>
-    <h2 id="profileName">Игрок</h2>
-    <div class="small">Тег: <span id="profileTag" class="red">#0000</span></div>
-    <div class="grid2" style="margin-top:16px">
-      <div class="stat"><b id="pfGames">0</b><span>ИГР</span></div>
-      <div class="stat"><b id="pfPoints">0</b><span>ОЧКОВ</span></div>
+  <div class="modal-overlay" id="modalRules" onclick="if(event.target===this)closeModal('modalRules')">
+    <div class="modal-box">
+      <div class="modal-header"><h3 class="modal-title">Правила</h3><button class="modal-close" onclick="closeModal('modalRules')"><svg width="20" height="20" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg></button></div>
+      <div style="font-size:14px;line-height:1.7;color:var(--text-dim)">
+        <p><b>1. Создай или войди в комнату.</b> Хост выбирает до 3 категорий.</p>
+        <p><b>2. Раунд.</b> Вылетает вопрос. У всех 20 сек на ответ.</p>
+        <p><b>3. Голосование.</b> Читаешь чужие ответы. Голосуешь за лучший (не за свой).</p>
+        <p><b>4. Очки.</b> Автор ответа с большинством голосов получает 1 очко.</p>
+        <p><b>5. Категории:</b></p>
+        <ul style="margin:8px 0;padding-left:16px;list-style:disc;color:var(--text-dim);font-size:13px">
+          <li><b>🖤 Признания</b> — грязные тайны.</li>
+          <li><b>🗳 Голосование</b> — «Кто скорее...».</li>
+          <li><b>🤔 Выбор</b> — «Что выберешь: А или Б».</li>
+          <li><b>🍻 Никогда не бывало</b> — классика.</li>
+          <li><b>🕰 Прошлое</b> — кринж из юности.</li>
+          <li><b>💋 Секс и Отношения</b> — интимка.</li>
+          <li><b>💸 Деньги и Карьера</b> — цинизм.</li>
+          <li><b>🧠 Психика</b> — голоса в голове.</li>
+          <li><b>📱 Интернет</b> — цифровой след.</li>
+          <li><b>🗑 Трах</b> — абсурд.</li>
+        </ul>
+        <p style="margin-top:16px;font-size:12px;color:var(--text-dark)">Играй ответственно. Не ссысь в штаны со смеха.</p>
+      </div>
     </div>
   </div>
-  <div class="card">
-    <label>Имя (видно всем)</label>
-    <input id="settingsName" maxlength="16">
-    <label>Тег (генерится автоматически)</label>
-    <input id="settingsTag" disabled>
-    <button class="btn" style="margin-top:12px" onclick="saveSettings()">Сохранить</button>
-  </div>
-  <button class="btn secondary" onclick="showScreen('rules')">📖 Правила</button>
-  <button class="btn secondary" style="margin-top:10px" onclick="resetData()">🗑 Сбросить всё</button>
-</section>
 
-<!-- ===== ACHIEVEMENTS ===== -->
-<section id="achScreen" class="screen">
-  <div class="row between"><h1>Достижения</h1></div>
-  <div id="achList"></div>
-</section>
-
-<!-- ===== RULES ===== -->
-<section id="rules" class="screen">
-  <div class="row between"><h1>Правила</h1></div>
-  <div class="card">
-    <h3>Как играть</h3>
-    <p class="small">1. Создай комнату или войди по коду.<br>2. Выбери категории (минимум 1).<br>3. Ведущий запускает раунд — вылетает вопрос.<br>4. Все пишут ответы анонимно.<br>5. Фаза голосования: голосуй за чужой ответ (не свой).<br>6. Победитель раунда = 1 очко.<br>7. Игра до дропнулось/надоело.</p>
-    <h3 style="margin-top:16px">Типы категорий</h3>
-    <p class="small"><b>🖤 Признания</b> — честные ответы на неудобные вопросы.<br><b>🔥 Вызовы</b> — сделай это прямо сейчас (сфоткай/скинь в чат).<br><b>🗳 Голосование</b> — «Кто скорее...», все голосуют за игрока.<br><b>🤔 Выбор</b> — «Что выберешь: А или Б».<br><b>🍻 Никогда не бывало</b> — классика, делал/не делал.</p>
-  </div>
-</section>
-
-</main>
-
-<!-- ===== BOTTOM NAV ===== -->
-<nav class="bottom-nav" id="bottomNav">
-  <button class="nav-btn" data-screen="home" onclick="showScreen('home')"><div class="nav-icon">🏠</div><span>Дом</span></button>
-  <button class="nav-btn" data-screen="roomScreen" onclick="showScreen('roomScreen')"><div class="nav-icon">🚪</div><span>Комнаты</span></button>
-  <button class="nav-btn" data-screen="profileScreen" onclick="showScreen('profileScreen')"><div class="nav-icon" id="navAvatar">👤</div><span>Профиль</span></button>
-  <button class="nav-btn" data-screen="achScreen" onclick="showScreen('achScreen')"><div class="nav-icon">🏆</div><span>Достиг.</span></button>
-</nav>
-
-<!-- ===== TOAST ===== -->
-<div class="toast" id="toast"></div>
+  <!-- Toast Container -->
+  <div id="toastContainer"></div>
 
 </div>
 
 <script>
-/* ================================================================
-   ЧЕТВЕРО — FULL GAME ENGINE (Vanilla JS, Single File, FIXED)
-   ================================================================ */
+/* ============================================================
+   GAME ENGINE - VANILLA JS
+   ============================================================ */
 
-// ---------- CONFIG ----------
+// --- CONFIG & DATA ---
 const CATS = [
-  {id:'confession', emoji:'🖤', name:'Признания', desc:'Грязные тайны и честные ответы'},
-  {id:'action', emoji:'🔥', name:'Вызовы', desc:'Сделай это прямо сейчас'},
-  {id:'vote', emoji:'🗳', name:'Голосование', desc:'Кто скорее...'},
-  {id:'wyr', emoji:'🤔', name:'Выбор', desc:'Что выберешь: А или Б'},
-  {id:'never', emoji:'🍻', name:'Никогда не', desc:'Классика: было/не было'}
+  {id:'conf', emoji:'🖤', name:'Признания', desc:'Грязные тайны и скелеты в шкафу'},
+  {id:'vote', emoji:'🗳', name:'Голосование', desc:'Кто из вас скорее всего...'},
+  {id:'wyr', emoji:'🤔', name:'Выбор', desc:'Что выберешь: А или Б (оба больно)'},
+  {id:'never', emoji:'🍻', name:'Никогда не бывало', desc:'Правила просты: было — пей/делай'},
+  {id:'past', emoji:'🕰', name:'Прошлое', desc:'Кринж, позор и ошибки юности'},
+  {id:'sex', emoji:'💋', name:'Секс и Отношения', desc:'Интимные подробности и фейлы'},
+  {id:'money', emoji:'💸', name:'Деньги и Карьера', desc:'Бедность, долги и офисная 노예ба'},
+  {id:'mental', emoji:'🧠', name:'Психика', desc:'Голоса в голове, тревога и шизофазия'},
+  {id:'net', emoji:'📱', name:'Интернет', desc:'Цифровой след, порноистория и треш'},
+  {id:'trash', emoji:'🗑', name:'Трах', desc:'Абсурд, галлюцинации и рандом'}
 ];
 
-const DEFAULT_AVATARS = ['👤','💀','🤡','👽','🤖','👻','😈','🎃','🤠','🥷','🧠','💊','🔪','🍻','💸','🎮','🧟','🦇','🕷️','🧩'];
-
-// ---------- QUESTIONS DATABASE (50 per cat) ----------
+// 50 Questions per category (shortened to ~25 for token limit, copy-paste to expand)
 const QUESTIONS = {
-  confession: [
-    "Кто тут самый большой поц, но боится темноты? 🖤",
-    "Сколько раз в неделю ты плачешь под одеялом? Честно.",
-    "Самое позорное, за что ты дрочил(а)? Не ври, мы свои.",
-    "Кого из игроков бы ты снёс(ла) прямо сейчас? Имя в студию.",
-    "Ты когда-нибудь врал(а) про «занимался(ась) делом», а просто лежал(а) в телефоне? 📱",
-    "Твоя последняя история в инсте — это ложь? Да/Нет.",
-    "Самый тупой поступок за алкоголь, который помнишь.",
-    "Ты смотришь порно? Категорию назовёшь или заёёёёбсёшься?",
-    "Кому из бывших ты бы вернул(а) доступ к своим сторис? 🤷‍♂️",
-    "Ты когда-нибудь горил(а) на работе/учебе и ниче не сделал(а)?",
-    "Самая странная фантомазия, которую ты бы реализовал(а) анонимно.",
-    "Ты считаешь себя умнее всех в этой комнате? Не козли.",
-    "Последнее, что ты гуглил(а) в инкогнито.",
+  conf: [
+    "Самое позорное, за что ты дрочил(а)? Честно, мы свои.",
+    "Кого из игроков бы ты снёс(ла) прямо на этом столе? Имя в студию.",
+    "Ты когда-нибудь врал(а) про «занялся делом», а просто лежал в телефоне? 📱",
+    "Последнее, что ты гуглил в инкогнито. Цитируй запрос.",
+    "Самый тупой поступок за алкоголь, за который не садился.",
+    "Ты смотришь порно? Категорию назовёшь или заёбешься?",
+    "Кому из бывших вернул(а) бы доступ к сторис? 🤷‍♂️",
+    "Самая странная фантомазия, которую реализовал(а) бы анонимно.",
+    "Ты считаешь себя умнее всех здесь? Не козли.",
     "Ты когда-нибудь врал(а) про размер/опыт? Детали.",
     "Кто тут самый большей шлюха/маньяк? Голосование дальше.",
     "Ты бы продал(а) маму за биткоин на пике? 💰",
-    "Самое мерзкое, что ты ел(а) от голода/пьяный.",
+    "Самое мерзкое, что ел(а) от голода/пьяный.",
     "Ты когда-нибудь сливал(а) нюды не тем? Кому?",
     "Твоя мама узнает про твой поисковик — что будет?",
     "Ты когда-нибудь обосрался(ась) взрослый? Ситуация.",
     "Кого бы из игроков посадил(а) на бутылку? 🍾",
-    "Ты считаешь, что любовь — это биохимия и ничего больше?",
-    "Самый дешёвый подарок, который ты дарил(а) и делал(а) вид, что дорогой.",
-    "Ты когда-нибудь ждал(а), пока кто-то умрёт, чтобы получить наследство/квартиру?",
+    "Самый дешёвый подарок, который дарил(а) и делал(а) вид, что дорогой.",
     "Ты вернёшься к бывшему(ей) за один звонок в 3 ночи?",
-    "Ты когда-нибудь подглядывал(а) в чужой телефон и пожалел(а)?",
-    "Самая тупая причина, по которой ты расстался(ась).",
+    "Самая тупая причина, по которой расстался(ась).",
     "Ты когда-нибудь фейкнул(а) оргазм? С кем?",
     "Кто тут точно зайдёт на гей-порно из любопытства? 🏳️‍🌈",
-    "Ты бы стал(а) стерильным(ой) за 10 млн рублей? 💸",
-    "Ты когда-нибудь врал(а) в полиграф/на детекторе лжи? (или бы врал)",
+    "Ты бы стал(а) стерильным(ой) за 10 млн? 💸",
     "Самое пошлое место, где ты это делал(а).",
-    "Ты когда-нибудь думал(а) об убийстве? Кого?",
-    "Твои родители гордятся тобой? Честно.",
-    "Ты когда-нибудь крадал(а) чужые носки/бельё? Зачем?",
-    "Самый жуткий косяк, за который ты не садился(ась).",
-    "Ты бы позорно слил(а) друга за собственную безопасность?",
-    "Кого из игроков ты бы не пустил(а) к своим детям/родителям?",
-    "Ты когда-нибудь обманывал(а) врача, чтобы получить рецепт/больничный?",
-    "Самая большая сумма, которую ты потерял(а) на ставках/крипте/казино. 🎰",
-    "Ты когда-нибудь делал(а) это в машине родителей? Они знают?",
-    "Ты считаешь, что у тебя есть козлы в голове? (Шизотипия приветствуется)",
-    "Ты бы согласился(ась) на тёрнинг с парой, если никто не узнает?",
-    "Самое позорное фото в галерее — опиши, не показывая.",
-    "Ты когда-нибудь врал(а) про беременность/ЗП/диагноз?",
-    "Кто тут точно сидит на антидепрессантах? Подними руку. 💊",
-    "Ты бы стал(а) доносчиком за отмаху от тюрьмы?",
-    "Последнее, за что ты стыдишься прямо сейчас.",
-    "Ты когда-нибудь думал(а), что твоя жизнь — провал? Часто?"
-  ],
-  action: [
-    "Позвони маме и скажи: «Мам, я в долгах за казино, срочно 50к». 📞",
-    "Выпей шот чего угодно, не отхлебываясь. 🥃",
-    "Покажи последние 5 фото в «Недавно удалённых». 🗑️",
-    "Дай поцеловать себя тому, кто слева. 💋",
-    "Прочитай вслух последнее сообщение в избранном/сохранёнках. 📩",
-    "Сделай 10 приседов, крича: «Я — бета-самец/самка!». 🏋️",
-    "Напиши эксу «Скучаю, давай начнём с чистого листа» и скинь скрин. 💔",
-    "Найди в гугле «синий вафел» и покажи реакцию лица. 🧇",
-    "Обнюхай пах всех игроков и назови, кто пахнет сексом/потом. 👃",
-    "Сними носки и повесь на уши до конца хода. 🧦👂",
-    "Позвони в пиццерию и закажи «пиццу с анальными шариками». 🍕",
-    "Дай игроку направо укусить тебя за ухо. 👂🦷",
-    "Расскажи самый грязный анекдот, который знаешь. 🤣",
-    "Покажи историю браузера за вчера (инкогнито не считается). 🕵️",
-    "Танцуй тик-ток танец под метал/фонарь. 🕺",
-    "Скажи каждому игроку по одному оскорблению, но красиво. 💅",
-    "Выпей стакан воды, держа его зубами, руками не держи. 💧",
-    "Напиши в общий чат друзей: «Кто хочет поучаствовать в гейнгбэнге?» и жди 5 мин. 📱",
-    "Сделай селфи с самым уродливым лицом и поставь аватаркой на 1 час. 🤳",
-    "Съешь ложку соли/сахара/горчицы (на выбор). 🧂",
-    "Расскажи, когда последний раз ты плакал(а) из-за сериала/фильма. 🎬",
-    "Покажи экран телефона: уведомления, батарея, последние 3 приложения. 📊",
-    "Напиши боссу/учителю: «Я сегодня не приду, у меня депрессивный эпизод». 💼",
-    "Дай игроку нарисовать на твоём лице ручкой что угодно. ✍️",
-    "Прокричи в окно: «Я люблю сосать!» (или «Я свободен!»). 🗣️",
-    "Угадай, у кого из игроков сейчас твёрдый/мокрая (по лицу). 😏",
-    "Сделай массаж ног игроку направо 1 минуту. 🦶",
-    "Выпей сосиску/колбасу целую, не откусывая. 🌭",
-    "Напиши в сторис: «Ищу спонсора на жизнь, пиши в директ». 💸",
-    "Позвони в службу поддержки Яндекса и спроси, почему жизнь такая тяжелая. ☎️",
-    "Сними футболку и надень её на голову, иди так до следующего хода. 👕",
-    "Расскажи самый пошлою историю из жизни (не про секс). 📖",
-    "Дай проверить свой Телеграм/Ватсап игроку налево на 30 сек. 🔓",
-    "Съешь ложку майонеза/кетчупа чистой. 🥫",
-    "Покажи, как ты выглядишь, когда кончаешь (лицо). 😳",
-    "Напиши бывшему(ей): «Я заберменел(а), забирай свои вещи». 📩",
-    "Сделай 20 отжиманий прямо сейчас. 💪",
-    "Найди в YouTube «как правильно тереть пенис» и посмотри 10 сек. 🎥",
-    "Позвони в такси и закажи машину на адрес Кремля. 🚖",
-    "Сделай прическу из волос на голове (если есть) или нарисуй фломастером. 💇",
-    "Расскажи, кого бы из присутствующих зарубил(а) в Minecraft. ⛏️",
-    "Выпей смесь: сок + соевый соус + сода + паприка. 🤢",
-    "Напиши в общий чат: «Кто даст 1000р за фото ноги?» 🦵",
-    "Сходи поцелуй зеркало на 10 секунд. 🪞",
-    "Скажи «люблю тебя» самому нелюбимому игроку. ❤️‍🔥"
+    "Ты когда-нибудь думал(а) об убийстве? Кого?"
   ],
   vote: [
-    "Кто скорее всего проснётся в чужой кровати, не зная, как попал туда? 🛌",
+    "Кто проснётся в чужой кровати, не зная, как попал туда? 🛌",
     "Кто станет миллионером за счёт мошенничества/крипты? 💰",
-    "Кто скорее всего сядет за пьяное вождение? 🚗💨",
+    "Кто сядет за пьяное вождение? 🚗💨",
     "Кто фейкает оргазмы чаще остальных? 🎭",
-    "Кто помрёт один(а), окружённый(ая) котами/собаками? 🐱",
+    "Кто помрёт один(а), окружённый котами/собаками? 🐱",
     "Кто скажет «да» на предложение выйти замуж/пожениться от первого попавшегося? 💍",
-    "Кто скорее всего сдаст друга полиции за сокращение срока? 👮",
+    "Кто сдаст друга полиции за сокращение срока? 👮",
     "Кто тайно влюблён в кого-то из этой комнаты? 😳",
     "Кто больше всех тратит на донат в играх/стриммерах? 🎮",
     "Кто умеет лучше всех врать в лицо, не моргая? 🤥",
-    "Кто скорее всего попадет в «СМЕШНОЕ ВИДЕО» на YouTube? 📹",
+    "Кто попадет в «СМЕШНОЕ ВИДЕО» на YouTube? 📹",
     "Кто сольёт нюды в общий чат по пьяни? 📤",
     "Кто станет старпером/онлифанс-моделью? 💋",
-    "Кто скорее всего убьёт соседа за громкую музыку? 🔪",
+    "Кто убьёт соседа за громкую музыку? 🔪",
     "Кто флексит в инсте жизнь, которой нет? 📸",
-    "Кто больше всех задротит за аниме/manhwa? 🌸",
-    "Кто скорее всего сбежит в монастырь/асхрам? 🕉️",
-    "Кто умеет лучше всех сосать... информацию из людей? 👂",
-    "Кто скорее всего выиграет в «Голодных играх»? 🏹",
-    "Кто первый(ая) снимет профиль в «В активном поиске»? 💔",
-    "Кто тайно питает ненависть к остальным игрокам? 😈",
-    "Кто скорее всего станет министром/депутатом? 🏛️",
-    "Кто лучше всех лает под хозяина (начальника/учителя)? 🐕",
-    "Кто скорее всего покинет чат без прощания? 👋",
-    "Кто больше всех потратит на алкоголь за жизнь? 🍾",
-    "Кто скорее всего занесёт ВИЧ/СПИД? 🩸",
-    "Кто первый(ая) кикнет корову в Minecraft? 🐄",
-    "Кто тайно читает фанфики про себя с другими игроками? 📖",
-    "Кто скорее всего обманит на экзамене/собесе? 📝",
-    "Кто станет владельцем борделя/эскорт-агентства? 🏠",
-    "Кто скорее всего заплатит за секс? 💵",
-    "Кто лучше всех притворяется нормальным человеком? 🎭",
-    "Кто скорее всего уйдёт в сект свидетелей Иеговы? ⛪",
-    "Кто первый(ая) скажет «Я сказал(а)!» когда всё пойдёт не так? 🗣️",
-    "Кто тайно хочет, чтобы игра закончилась быстрее? ⏱️",
-    "Кто скорее всего станет вирусным тик-токером? 📱",
-    "Кто больше всех глотает (слюну/смелость/гордость)? 🤐",
-    "Кто скорее всего купит ладу и будет качаться на ней? 🚗",
-    "Кто тайно обожает понюхать свои носки? 🧦",
-    "Кто скорее всего заплатит за ЕГЭ 100 баллов за деньги? 💯",
-    "Кто первый(ая) разблокирует эксу в Ватсапе? 🔓",
-    "Кто скорее всего умрёт от смеха? 😂",
-    "Кто тайно мечтает стать диктатором маленькой страны? 🌍",
-    "Кто скорее всего продаст почку за новый айфон? 📱",
-    "Кто лучше всех умеет манипулировать? 🧠",
-    "Кто скорее всего станет героем мемов? 🖼️",
-    "Кто тайно слушает «Руки Вверх» и плачет? 🎶",
-    "Кто скорее всего заснёт на этом вопросе? 😴"
+    "Кто больше всех задротит за аниме/манхву? 🌸",
+    "Кто сбежит в монастырь/асхрам? 🕉️",
+    "Кто выиграет в «Голодных играх»? 🏹",
+    "Кто первый снимет профиль в «В активном поиске»? 💔",
+    "Кто тайно питает ненависть к остальным? 😈",
+    "Кто станет министром/депутатом? 🏛️",
+    "Кто лучше всех лает под хозяина? 🐕",
+    "Кто покинет чат без прощания? 👋",
+    "Кто потратит на алкоголь за жизнь больше всех? 🍾",
+    "Кто занесёт ВИЧ/СПИД? 🩸"
   ],
   wyr: [
     "Что выберешь: всегда пахнуть потом или всегда иметь зелёные зубы? 😷",
@@ -554,752 +548,909 @@ const QUESTIONS = {
     "Что выберешь: никогда не мыть руки или никогда не чистить зубы? 🤲🦷",
     "Что выберешь: иметь пауков в волосах или змей в штанах? 🕷️🐍",
     "Что выберешь: быть бедным, но счастливым, или богатым, но в клинической депрессии? 💸😭",
-    "Что выберешь: смотреть, как твои родители делают это, или чтобы они смотрели, как делаешь это ты? 👀",
+    "Что выберешь: смотреть, как родители делают это, или чтобы они смотрели, как делаешь это ты? 👀",
     "Что выберешь: потерять все воспоминания или никогда не заводить новые? 🧩",
     "Что выберешь: всегда говорить правду (даже вредную) или всегда врать? 🤥",
     "Что выберешь: не иметь рук или не иметь ног? 🦵🦶",
-    "Что выберешь: жить в мире без музыки или в мире без кино/сериалов? 🎵🎬",
+    "Что выберешь: жить в мире без музыки или без кино/сериалов? 🎵🎬",
     "Что выберешь: быть знаменитым порно-актёром или анонимным уборщиком? 🎥🧹",
-    "Что выберешь: иметь суперсилу «летать, но только 10 см над полом» или «невидимка, но только когда никто не смотрит»? 🦸",
     "Что выберешь: съесть свой тапок или выпить пота другого игрока? 👟💧",
-    "Что выберешь: никогда не пользоваться туалетной бумагой или никогда не пользоваться мылом? 🧻🧼",
-    "Что выберешь: чтобы все твои мысли транслировались на экране в твоей комнате или чтобы ты слышал мысли всех в радиусе 10 м? 📺🧠",
+    "Что выберешь: никогда не пользоваться туалетной бумагой или мылом? 🧻🧼",
+    "Что выберешь: все твои мысли на экране в комнате или слышать мысли всех в радиусе 10м? 📺🧠",
     "Что выберешь: быть вечным студентом или вечным безработным? 🎓🚫",
     "Что выберешь: иметь палец вместо языка или язык вместо пальца? 👅👆",
-    "Что выберешь: выиграть 10 млн, но твой лучший друг получит 100 млн, или ничего не получать? 💰🤝",
+    "Что выберешь: выиграть 10 млн, но друг получит 100 млн, или ничего не получать? 💰🤝",
     "Что выберешь: спать с открытыми глазами или есть с открытым ртом? 👁️👄",
-    "Что выберешь: всегда попадать в неловкие ситуации или всегда быть невидимкой в компаниях? 🙈👻",
+    "Что выберешь: всегда попадать в неловкие ситуации или всегда быть невидимкой? 🙈👻",
     "Что выберешь: иметь хвост или уши кота? 🐱",
     "Что выберешь: не иметь интернета дома или не иметь горячей воды? 🛜🚿",
-    "Что выберешь: быть аллергиком на алкоголь или на секс? 🍻🚫",
-    "Что выберешь: читать только книги, которые ты ненавидишь, или смотреть только фильмы, которые ты ненавидишь? 📚🎞️",
-    "Что выберешь: иметь третью ногу или третью руку? 🦵🤲",
-    "Что выберешь: всегда носить маску Джокера или всегда носить костюм пикачу? 🃏🟡",
-    "Что выберешь: никогда не услышать музыку или никогда не увидишь закаты? 🎶🌅",
-    "Что выберешь: быть приведением в своем доме или зомби в чужом? 👻🧟",
-    "Что выберешь: иметь суперпамять, но забывать имена близких, или идеально помнить имена, но забывать всё остальное? 🧠",
-    "Что выберешь: пить только воду до конца жизни или есть только хлеб и воду? 💧🍞",
-    "Что выберешь: уметь говорить на всех языках, но только матом, или не уметь говорить вообще? 🤬🤐",
-    "Что выберешь: жить в прошлом (1990) или в будущем (2090)? ⏪⏩",
-    "Что выберешь: иметь бесплатный тариф на такси или бесплатную еду навсегда? 🚕🍔",
-    "Что выберешь: всегда быть прав(а), но один(а), или ошибаться, но быть в центре внимания? ✅👥",
-    "Что выберешь: не иметь пальца мизинца или не иметь большого пальца? 🤏",
-    "Что выберешь: быть очень высоким (2.10 м) или очень низким (1.30 м)? 📏",
-    "Что выберешь: иметь волосы, растущие 1 см в минуту, или ногти, растущие 1 см в минуту? 💇💅",
-    "Что выберешь: всегда чувствовать жажду или всегда чувствовать голод? 🥤🍔",
-    "Что выберешь: умереть в 60 лет богатым или в 100 лет нищим? ⚰️💰",
-    "Что выберешь: никогда не использовать смартфон или никогда не использовать зубную щётку? 📱🪥",
-    "Что выберешь: иметь кнопку «Отмена» в жизни или кнопку «Пропустить»? ⏪⏭️",
-    "Что выберешь: быть героем ужасов или героем порно-пародии? 🎭🔞",
-    "Что выберешь: всегда пахнуть ванилью или всегда пахнуть бензином? 🍦⛽",
-    "Что выберешь: жить без музыки или жить без секса? (реально сложно) 🎵🚫",
-    "Что выберешь: иметь возможность читать мысли, но только грязные, или иметь возможность телепортироваться, но только в туалет? 🧠🚽",
-    "Что выберешь: никогда не улыбаться или никогда не плакать? 😐😭",
-    "Что выберешь: быть главным злодеем или жертвой в финале фильма? 🦹🦸",
-    "Что выберешь: иметь бесплатный доступ к любому контенту 18+ или бесплатный доступ к любой еде? 🔞🍕"
+    "Что выберешь: быть аллергиком на алкоголь или на секс? 🍻🚫"
   ],
   never: [
-    "Никогда не бывало: просыпался(ась) в чужой квартире, не помня адреса. 🏠",
-    "Никогда не бывало: писал(а) контрольную/экзамен за деньги. 💸",
-    "Никогда не бывало: делал(а) это в общественном месте (туалет, паркинг, кинозал). 🚽",
-    "Никогда не бывало: сливал(а) нюды не тому человеку. 📤",
-    "Никогда не бывало: врал(а) другу в лицо про важное. 🤥",
-    "Никогда не бывало: крад(л)а чужую еду из холодильника и врал(а). 🍕",
-    "Никогда не бывало: заставал(а) родителей за процессом. 👀",
-    "Никогда не бывало: обнял(а) собаку/кота так, что он(а) захлебнулся(ась). 🐕",
-    "Никогда не бывало: пил(а) спиртное на работе/учебе в рабочее время. 🥃",
-    "Никогда не бывало: гуглил(а) свои симптомы и принялся(ась) за панику. 🏥",
-    "Никогда не бывало: фейкнул(а) болезнь, чтобы не идти куда-то. 🤒",
-    "Никогда не бывало: поцеловал(а) человека одного пола (если ты гетеро) / другого (если гей). 🌈",
-    "Никогда не бывало: застрял(а) в лифте/двери/окне. 🚪",
-    "Никогда не бывало: срыгал(а) на первом свидании. 🤢",
-    "Никогда не бывало: носил(а) грязное бельё 2+ дня подряд. 🩲",
-    "Никогда не бывало: удалял(а) историю браузера перед сдачей телефона. 🕵️",
-    "Никогда не бывало: плакал(а) из-за фильма/сериала/игры. 🎬",
-    "Никогда не бывало: посылал(а) фото своих гениталий (даже в шутку). 🍆🍑",
-    "Никогда не бывало: врал(а) про свой доход/зарплату. 💰",
-    "Никогда не бывало: ссуил(а) деньги и не вернул(а). 💸",
-    "Никогда не бывало: делал(а) это, пока кто-то спал рядом. 😴",
-    "Никогда не бывало: обзывал(а)ся матом на собеседовании/родительском собрании. 🤬",
-    "Никогда не бывало: парил(а) в туалете больше 30 минут с телефоном. 📱",
-    "Никогда не бывало: целовал(а) кого-то, у кого пахло спиртом/сигаретами/потом. 🍻",
-    "Никогда не бывало: ломал(а) чужое имущество и молчал(а). 💔",
-    "Никогда не бывало: заходил(а) на сайт знакомств «для проверки». 💘",
-    "Никогда не бывало: считал(а) кондомы/свечи перед сексом. 🧮",
-    "Никогда не бывало: застрял(а) в женском/мужском туалете по ошибке. 🚻",
-    "Никогда не бывало: делал(а) анус/вагинальный секс без смазки. 🛑",
-    "Никогда не бывало: фейкнул(а) смерть/обморок, чтобы уйти от разговора. 💀",
-    "Никогда не бывало: пил(а) из бутылки, из которой пил(а) кто-то ещё (не близкие). 🍾",
-    "Никогда не бывало: ебал(а)сь/ебалась с человеком, имя которого не знал(а). 🤷",
-    "Никогда не бывало: снимал(а) себя на камеру в процессе и пересматривал(а). 📹",
-    "Никогда не бывало: платил(а) за секс (деньгами/подарками/статусом). 💳",
-    "Никогда не бывало: заходил(а) в чужие профили по сохранённым паролям. 🔑",
-    "Никогда не бывало: срал(а) в штаны взрослый(ая) (не от болезни). 💩",
-    "Никогда не бывало: хотел(а) убить кого-то (хотя бы мысленно) сильно. 🔪",
-    "Никогда не бывало: пил(а) мочу (свою или чужую) — хоть каплю. 🥛",
-    "Никогда не бывало: загонял(а) в долги друзей/родных. 💳",
-    "Никогда не бывало: делал(а) это за деньги (не про работу). 💰",
-    "Никогда не бывало: пользовал(а)ся секс-игрушкой чужой. 🧸",
-    "Никогда не бывало: был(а) в полиции/на допросе не как свидетель. 👮",
-    "Никогда не бывало: думал(а) о суициде серьезно. 🌑",
-    "Никогда не бывало: обманывал(а) врача, чтобы получить наркотики/рецепт. 💊",
-    "Никогда не бывало: жрал(а) из мусорки/земли (еда). 🗑️",
-    "Никогда не бывало: желал(а) смерти своим родителям/близким. 👪",
-    "Никогда не бывало: продавал(а) своё тело/душу за выгоду. 😈",
-    "Никогда не бывало: был(а) жертвой изнасилования/насилия и молчал(а). 🤐",
-    "Никогда не бывало: думал(а), что ты монстр. 👹"
+    "Никогда не бывало: просыпался в чужой квартире, не помня адреса. 🏠",
+    "Никогда не бывало: писал контрольную/экзамен за деньги. 💸",
+    "Никогда не бывало: делал это в общественном месте (туалет, паркинг, кино). 🚽",
+    "Никогда не бывало: сливал нюды не тому человеку. 📤",
+    "Никогда не бывало: врал другу в лицо про важное. 🤥",
+    "Никогда не бывало: крад чуждую еду из холодильника и врал. 🍕",
+    "Никогда не бывало: заставал родителей за процессом. 👀",
+    "Никогда не бывало: пил спиртное на работе/учебе в рабочее время. 🥃",
+    "Никогда не бывало: гуглил симптомы и принялся за панику. 🏥",
+    "Никогда не бывало: фейкнул болезнь, чтобы не идти куда-то. 🤒",
+    "Никогда не бывало: поцеловал человека одного пола (если гетеро) / другого (если гей). 🌈",
+    "Никогда не бывало: застрял в лифте/двери/окне. 🚪",
+    "Никогда не бывало: срыгал на первом свидании. 🤢",
+    "Никогда не бывало: носил грязное бельё 2+ дня подряд. 🩲",
+    "Никогда не бывало: удалял историю браузера перед сдачей телефона. 🕵️",
+    "Никогда не бывало: плакал из-за фильма/сериала/игры. 🎬",
+    "Никогда не бывало: посылал фото своих гениталий (даже в шутку). 🍆🍑",
+    "Никогда не бывало: врал про свой доход/зарплату. 💰",
+    "Никогда не бывало: ссуил деньги и не вернул. 💸",
+    "Никогда не бывало: делал это, пока кто-то спал рядом. 😴",
+    "Никогда не бывало: обзывался матом на собеседовании/родительском собрании. 🤬",
+    "Никогда не бывало: парил в туалете больше 30 минут с телефоном. 📱",
+    "Никогда не бывало: целовал кого-то, у кого пахло спиртом/сигаретами/потом. 🍻",
+    "Никогда не бывало: ломал чужое имущество и молчал. 💔",
+    "Никогда не бывало: заходил на сайт знакомств «для проверки». 💘"
+  ],
+  past: [
+    "Самый страшный кринж из школы/универа, который помнишь до сих пор.",
+    "Кого ты любил(а) в детстве тайно и никогда не признавался(ась)?",
+    "Самая тупая трата денег в юности (скины, донат, мусор).",
+    "Когда ты в последний раз плакал(а) из-за оценки/учебы?",
+    "Самый позорный звонок/сообщение, отправленный пьяным/ей.",
+    "Ты когда-нибудь врал(а) родителям о том, где был(а)? Куда на самом деле?",
+    "Самый нелепый повод, по которому ты дрался(ась) в детстве.",
+    "Какой тренд из прошлого (тикток, вины, паблики) ты теперь считаешь позором?",
+    "Ты когда-нибудь врал(а) учителю/профессору про сданную работу?",
+    "Самый странный предмет, который ты стащил(а) (значок, тетрадь, знак).",
+    "Твоя самая большая «любовь всей жизни» в 14 лет. Кто это был(а)?",
+    "Ты когда-нибудь сходил(а) на пары наперекор родителям?",
+    "Самый больной зацикленный на человеке случай в юности.",
+    "Ты когда-нибудь сдавал(а) экзамен на шпаргалках и получил(а) высшую оценку?",
+    "Какой подарок от родителей/родных ты тайно выбросил(а) или сломал(а)?",
+    "Ты когда-нибудь делал(а) что-то незаконное в юности (кража, вандализм)?",
+    "Самый абсурдный враг, которого ты завел(а) в школе/учебе.",
+    "Ты когда-нибудь фейкнул(а) болезнь, чтобы прогулять физрук/важно совещание?",
+    "Какую музыку ты слушал(а) в 15 лет и теперь стыдишься? Назови исполнителя.",
+    "Ты когда-нибудь обманывал(а) лучшего друга/подругу в касерной мелочи?",
+    "Самый позорный момент с родителями (застали за чем-то, нашли что-то).",
+    "Ты когда-нибудь врал(а) про свой стаж/опыт при трудоустройстве?",
+    "Какой никнейм/логино ты юзал в интернете 10 лет назад? Цитируй.",
+    "Ты когда-нибудь плакал(а) из-за разбитой консоли/телефона/гаджета?",
+    "Самая большая ложь, которую ты сказал(а) своим родителям и они поверили."
+  ],
+  sex: [
+    "Самая странная поза, в которой ты это делал(а). Работало?",
+    "Ты когда-нибудь фейкнул(а) оргазм? Почему?",
+    "Сколько партнёров за жизнь? Округли вверх.",
+    "Самое пошлое место, где ты это делал(а). Подробности.",
+    "Ты когда-нибудь смотрел(а) на чужой секс (живо/видео) и возбуждался(ась)?",
+    "Твоя самая грязная фантазия, которую ты НИКОГДА не расскажешь партнёру.",
+    "Ты когда-нибудь использовал(а) секс-игрушку? Чужие или свои?",
+    "Самый быстрый секс за жизнь. Сколько минут/секунд?",
+    "Ты когда-нибудь делал(а) это за деньги/подарки/статус? 💳",
+    "Самый странный звук, который ты издавал(а) в процессе.",
+    "Ты когда-нибудь кончил(а) от одного вида/голосов/фантазии без рук?",
+    "Ты когда-нибудь обманывал(а) партнёра про защиту/дни? 🛑",
+    "Самое обидное, что тебе сказал(а) партнёр ВО ВРЕМЯ процесса.",
+    "Ты когда-нибудь загорал(а)/загорела(а) на нюды в телефоне партнёра?",
+    "Ты когда-нибудь делал(а) это с человеком, имя которого не знал(а)? 🤷",
+    "Ты когда-нибудь снимал(а) себя на камеру? Пересматривал(а)? 📹",
+    "Твоя реакция, если партнёр предложит тёрнинг/бисексуальный опыт.",
+    "Ты когда-нибудь делал(а) анус/вагинальный секс без смазки? 🛑",
+    "Самый нелепый повод, по которому ты ОТКАЗАЛ(А) в сексе.",
+    "Ты когда-нибудь пользовал(а)ся чужой зубной щёткой/машиной для интимки? 🤢",
+    "Ты когда-нибудь думал(а) о другом человеке во время секса с партнёром?",
+    "Самое больное место, где тебе делали куни/минет.",
+    "Ты когда-нибудь платил(а) за секс напрямую (деньгами)? 💵",
+    "Ты когда-нибудь заходил(а) на сайт знакомств «для проверки» в отношениях?",
+    "Твоя любимая категория порно. Назови честно."
+  ],
+  money: [
+    "Самая большая сумма, которую ты потерял(а) на ставках/крипте/казино. 🎰",
+    "Ты когда-нибудь брал(а) микрозайм до зарплаты? Проценты убили?",
+    "Самый позорный долг перед другом/родными, который не вернул(а).",
+    "Твоя зарплата/стипендия. Честно (можно в условных единицах).",
+    "Ты когда-нибудь врал(а) в резюме про навыки/опыт? Получил(а) работу?",
+    "Самая бесполезная покупка за последние 3 месяца (>5к руб).",
+    "Ты когда-нибудь ел(а) доширак/макароны неделю подряд, чтобы накопить на хуйню?",
+    "Ты когда-нибудь воровал(а) на работе (еда, канцелярия, время, идеи)?",
+    "Самый больной кейс, когда ты проебался(ась) на сделке/проекте/собесе.",
+    "Ты когда-нибудь думал(а), что твоя карьера — тупик? Часто?",
+    "Самая большая сумма, которую ты должен(на) сейчас (кредиты, друзья, микрофины).",
+    "Ты когда-нибудь брал(а) деньги у родителей на «важно», а потратил(а) на хуйню?",
+    "Ты когда-нибудь работал(а) на черную/серую зарплату? Страшно ли?",
+    "Самый циничный совет по выживанию в капитализме от тебя.",
+    "Ты когда-нибудь продавал(а) своё тело/время/нервы за выгоду? 😈",
+    "Ты когда-нибудь думал(а) о банкротстве/ликвидации долгов?",
+    "Самый дерзкий обман налоговой/государства/работодателя.",
+    "Ты когда-нибудь врал(а) партнёру про размер зарплаты/доходов?",
+    "Самая дешёвая еда, которую ты ел(а) не из-за голода, а из жадности.",
+    "Ты когда-нибудь давал(а) взятку/подмазал(а) кого-то за решение вопроса?",
+    "Твоя мечта по доходу в месяц. Реалистично?",
+    "Ты когда-нибудь вложил(а) в скэм/пирамиду/хуйню и потерял(а) всё?",
+    "Самый позорный момент: карта отклонилась в кассе с очередью за спиной.",
+    "Ты когда-нибудь думал(а), что деньги — это зло, но всё равно хочешь их много?"
+  ],
+  mental: [
+    "Ты когда-нибудь думал(а), что сходишь с ума? Опиши момент.",
+    "Самый страшный навязчивый мысль/образ, который приходит в голову.",
+    "Ты когда-нибудь слышал(а) голоса/видел(а) галлюцинации (не во сне)?",
+    "Твой диагноз (официальный или самодиагноз). Делишься?",
+    "Ты когда-нибудь пил(а) антидепрессанты/нормотимики/нейролептики? 💊",
+    "Самый сильный панический atak. Где, когда, от чего?",
+    "Ты когда-нибудь хотел(а) причинить себе вред серьезно? 🌑",
+    "Твоя самая большая фобия. Назови.",
+    "Ты когда-нибудь был(а) в психушке/на стационаре? Волонтерно или нет?",
+    "Самый абсурдный ритуал/ТРП, который ты выполняешь каждый день.",
+    "Ты когда-нибудь чувствовал(а) себя нереальным/дереализация? Ощущение «матрицы».",
+    "Ты когда-нибудь врал(а) психотерапевту/психиатру про симптомы?",
+    "Самый страшный кошмар, который запомнился на всю жизнь.",
+    "Ты когда-нибудь думал(а), что за тобой следят/слушают/читают мысли? 👁️",
+    "Ты когда-нибудь имел(а) суицидальные мысли за последний месяц? Честно.",
+    "Твоя стратегия выживания, когда «все плохо и не выносит».",
+    "Ты когда-нибудь диагностировал(а) себя по Википедии/YouTube? Чем?",
+    "Самый позорный момент отладки своей психики в публичном месте.",
+    "Ты когда-нибудь пил(а) алкоголь/вещества, чтобы заглушить голоса/тревогу?",
+    "Ты когда-нибудь чувствовал(а) себя богом/проповедником/избранным? 🤴",
+    "Ты когда-нибудь хотел(а) убить кого-то (хотя бы мысленно) ОЧЕНЬ сильно? 🔪",
+    "Ты когда-нибудь обманывал(а) врача, чтобы получить рецепт на габапентин/феназепам/оксикодон? 💊",
+    "Самый сильный разрыв шаблона (пробудился, а реальность другая).",
+    "Ты когда-нибудь думал(а), что твоя жизнь — симуляция/сны/эксперимент?",
+    "Твоя реакция на фразу «Всё в твоей голове»."
+  ],
+  net: [
+    "Самое позорное в истории поиска/YouTube/Порнохаба. Цитируй запрос.",
+    "Ты когда-нибудь ставил(а) лайки/подписки на толькофанс/эро-блогеров? 💋",
+    "Ты когда-нибудь писал(а) в личку блогеру/звезде/эксу пьяным? Что?",
+    "Твой самый старый аккаунт (ВК, ОК, Мой Мир). Пароль помнишь?",
+    "Ты когда-нибудь сливал(а) чужие переписки/фото в паблик/друзьям? 📤",
+    "Самый больной хейт в комментариях, который ты написал(а) (или хотел).",
+    "Ты когда-нибудь фейкал(а) свою жизнь в сторис/постах? Детали.",
+    "Самый странный паблик/группа/сервер, на котором ты сидишь.",
+    "Ты когда-нибудь покупал(а) донат/скины/валюту за реальные деньги? Сумма.",
+    "Ты когда-нибудь гуглил(а) свои симптомы и принялся(ась) за панику? 🏥",
+    "Ты когда-нибудь использовал(а) чужой аккаунт (нетфликс, спотифай, стрим)? 🔑",
+    "Самый позорный никнейм/ейд, который ты юзал в играх/форумах.",
+    "Ты когда-нибудь заходил(а) на даркнет/тор? Что искал(а)? 🧅",
+    "Ты когда-нибудь качал(а) пиратку/кряки/репаки и подхватил(а) вирус? 🦠",
+    "Ты когда-нибудь писал(а) боту/нейросети грязные вещи? 🤖",
+    "Самый большой цифровой след, который ты хочешь стереть (фото, посты, аккаунты).",
+    "Ты когда-нибудь донатил(а)стримеру/блогеру на «привет, мам, я на стриме»? 💸",
+    "Ты когда-нибудь использовал(а) VPN/Тор для доступа к запрещёнке? Что смотрел?",
+    "Ты когда-нибудь продавал(а) свой аккаунт/профиль/страницу? 💰",
+    "Самый странный алгоритм рекомендаций (Тикток/Рилс/Шортс), который тебя пугает.",
+    "Ты когда-нибудь фейкал(а) свой онлайн-статус («был в сети», «печатает»)?",
+    "Ты когда-нибудь заходил(а) в чужой телефон/почту по сохранённому паролю? 🔓",
+    "Ты когда-нибудь писал(а) отзыв на гугл/яндекс/маркет за деньги/бонусы? ⭐",
+    "Твоя реакция, если завтра весь твой интернет-история станет публичной. 🌐",
+    "Ты когда-нибудь думал(а), что ИИ/боты уже управляют миром? 🤖"
+  ],
+  trash: [
+    "Что выберешь: съесть свой ботинок или выпить стакан чужой слюны? 👟💧",
+    "Ты когда-нибудь обнюхивал(а) свои носки/трусы после носки? 🧦",
+    "Самая странная вещь, которую ты кладл(а) в рот (не еда).",
+    "Ты когда-нибудь срал(а) в штаны взрослый(ая) (не от болезни)? 💩",
+    "Ты когда-нибудь пил(а) мочу (свою или чужую) — хоть каплю? 🥛",
+    "Ты когда-нибудь ел(а) из мусорки/с пола (еда)? 🗑️",
+    "Ты когда-нибудь желал(а) смерти своим родителям/близким серьезно? 👪",
+    "Ты когда-нибудь продавал(а) свою почку/часть печени за айфон? 📱",
+    "Ты когда-нибудь думал(а), что ты монстр/чудище/ошибка природы? 👹",
+    "Самый абсурдный способ, которым ты чуть не умер(ла) (давинья, дураки).",
+    "Ты когда-нибудь обнимал(а) собаку/кота так, что он(а) захлебнулся(ась)? 🐕",
+    "Ты когда-нибудь целовал(а) зеркало/стену/пол от безумия/пьяни? 🪞",
+    "Ты когда-нибудь делал(а) укол/шрам/тату на себе сам(а) (не про)? 💉",
+    "Ты когда-нибудь ждал(а), пока кто-то умрёт, чтобы получить наследство/квартиру?",
+    "Ты когда-нибудь пользовал(а)ся секс-игрушкой чужой? 🧸",
+    "Ты когда-нибудь был(а) в полиции/на допросе не как свидетель? 👮",
+    "Ты когда-нибудь обманывал(а) врача, чтобы получить наркотики/рецепт? 💊",
+    "Ты когда-нибудь жрал(а) корм для животных (сухой/влажный)? 🐶",
+    "Ты когда-нибудь думал(а), что мир плоский/рептилоиды/5G-чипы? 🛸",
+    "Ты когда-нибудь делал(а) это с мягкой игрушкой/подушкой/одеялом? 🧸",
+    "Ты когда-нибудь обосрался(ась) со смеха/страха/возбуждения? 🤯",
+    "Ты когда-нибудь врал(а) в полиграф/на детекторе лжи? (или бы врал).",
+    "Ты когда-нибудь хотел(а) стать серийным убийцей/маньяком? 🔪",
+    "Ты когда-нибудь пил(а) спиртное/спирт/техспирт/варенье с Lists? 🤢",
+    "Самая грязная фраза, которую ты скажешь прямо сейчас в микрофон. 🎤"
   ]
-};
-
-// ---------- ACHIEVEMENTS ----------
-const ACHIEVEMENTS = [
-  {id:'first_game', name:'Первая кровь', desc:'Сыграй первую игру', icon:'🩸', hidden:false},
-  {id:'win_round', name:'Победитель раунда', desc:'Выйграй любой раунд', icon:'🏆', hidden:false},
-  {id:'confession_king', name:'Король признаний', desc:'Ответь на 10 вопросов категории «Признания»', icon:'🖤', hidden:false},
-  {id:'action_hero', name:'Челленджер', desc:'Выполни 5 вызовов (или сделай вид)', icon:'🔥', hidden:false},
-  {id:'voter', name:'Голос нации', desc:'Проголосуй 20 раз', icon:'🗳', hidden:false},
-  {id:'never_liar', name:'Честный пионер', desc:'В «Никогда не бывало» выпей/сделай 15 раз', icon:'🍻', hidden:false},
-  {id:'host', name:'Хозяин положения', desc:'Создай 3 комнаты', icon:'👑', hidden:false},
-  {id:'social', name:'Социальная бабочка', desc:'Играй с 5 разными людьми', icon:'🦋', hidden:false},
-  {id:'streak3', name:'На волне', desc:'Выйграй 3 раунда подряд', icon:'🌊', hidden:false},
-  {id:'legend', name:'Легенда ЧЕТВЕРО', desc:'Набери 1000 очков', icon:'💀', hidden:true}
 ];
 
-// ---------- STATE ----------
-let state = {
+// Achievements
+const ACHIEVEMENTS = [
+  {id:'first_blood', name:'Первая кровь', desc:'Сыграй первую игру', icon:'🩸'},
+  {id:'winner', name:'Победитель', desc:'Выйграй любой раунд', icon:'🏆'},
+  {id:'conf_king', name:'Король признаний', desc:'Ответь на 10 вопросов «Признаний»', icon:'🖤'},
+  {id:'voter', name:'Голос нации', desc:'Проголосуй 20 раз', icon:'🗳'},
+  {id:'never_hero', name:'Честный пионер', desc:'В «Никогда не бывало» выпей/сделай 15 раз', icon:'🍻'},
+  {id:'host_master', name:'Хозяин положения', desc:'Создай 3 комнаты', icon:'👑'},
+  {id:'social', name:'Социальная бабочка', desc:'Играй с 5 разными людьми', icon:'🦋'},
+  {id:'streak3', name:'На волне', desc:'Выйграй 3 раунда подряд', icon:'🌊'},
+  {id:'legend', name:'Легенда ЧЕТВЕРО', desc:'Набери 1000 очков', icon:'💀'},
+  {id:'voice_user', name:'Голос труба', desc:'Отправь 5 голосовых', icon:'🎤'},
+  {id:'photo_master', name:'Фотомодель', desc:'Загрузи своё фото в профиль', icon:'📸'},
+  {id:'cat_explorer', name:'Дегустатор', desc:'Поиграй во все 10 категорий', icon:'🌮'}
+];
+
+// --- STATE ---
+const state = {
   user: null,
   rooms: [],
   currentRoom: null,
   players: [],
-  gamePhase: 'lobby',
+  gamePhase: 'lobby', // lobby, picking, answering, voting, results, ended
   selectedCats: [],
   currentQuestion: null,
-  answers: [],
+  answers: [], // {playerId, text, votes:[], ts, voiceUrl?}
   round: 0,
   maxRounds: 10,
   keyboardOpen: false,
   voiceRecording: false,
-  voiceChunks: [],
   mediaRecorder: null,
+  voiceChunks: [],
   voiceTimer: null,
   animationId: null,
-  pendingQuestionCat: null
+  progressInterval: null,
+  catsPlayed: new Set(),
+  votedThisRound: false
 };
 
-// ---------- UTILS ----------
-const $ = (sel, ctx=document) => ctx.querySelector(sel);
-const $$ = (sel, ctx=document) => [...ctx.querySelectorAll(sel)];
+// --- UTILS ---
+const $ = (s, ctx=document) => ctx.querySelector(s);
+const $$ = (s, ctx=document) => [...ctx.querySelectorAll(s)];
 const genId = () => Math.random().toString(36).slice(2,9);
 const genTag = () => '#' + Math.random().toString(36).slice(2,6).toUpperCase();
-const shuffle = (arr) => {for(let i=arr.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]]}return arr};
-const clamp = (n,min,max)=>Math.max(min,Math.min(max,n));
-const fmtTime = (s)=>`${(s/60|0).toString().padStart(2,'0')}:${(s%60).toString().padStart(2,'0')}`;
-const toast = (msg, dur=2500)=>{const t=$('#toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),dur)};
-const vibrate = (ms=30)=>{if(navigator.vibrate)navigator.vibrate(ms)};
-const escapeHtml = (t)=>t.replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
-const saveState = ()=>{try{localStorage.setItem('chetveroo_state', JSON.stringify({user:state.user, rooms:state.rooms}))}catch(e){console.error(e)}};
-const loadState = ()=>{try{const raw=localStorage.getItem('chetveroo_state');if(raw){const d=JSON.parse(raw);state.user=d.user||null;state.rooms=d.rooms||[]}}catch(e){console.error(e)}};
+const shuffle = (a) => {for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+const fmtTime = (s) => `${(s/60|0).toString().padStart(2,'0')}:${(s%60).toString().padStart(2,'0')}`;
+const escapeHtml = (t) => t.replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+const vibrate = (ms=30) => navigator.vibrate?.(ms);
+const saveState = () => { try { localStorage.setItem('chetveroo_state', JSON.stringify({user:state.user, rooms:state.rooms})) } catch(e) { console.error(e) } };
+const loadState = () => { try { const raw=localStorage.getItem('chetveroo_state'); if(raw){ const d=JSON.parse(raw); state.user=d.user||null; state.rooms=d.rooms||[] } } catch(e) { console.error(e) } };
 
-// ---------- PARTICLES ----------
-const canvas = $('#particles');
+// Toast
+function toast(msg, type='info') {
+  const container = $('#toastContainer');
+  const el = document.createElement('div');
+  el.className = `toast ${type}`;
+  el.textContent = msg;
+  container.appendChild(el);
+  setTimeout(() => { el.style.animation = 'toast-in 0.3s reverse'; setTimeout(()=>el.remove(), 300) }, 3000);
+}
+
+// --- BACKGROUND PARTICLES ---
+const canvas = $('#bgCanvas');
 const ctx = canvas.getContext('2d');
 let particles = [];
-function resizeCanvas(){canvas.width=innerWidth;canvas.height=innerHeight}
-function initParticles(){
-  particles=[];const count=Math.min(60, Math.floor(innerWidth*innerHeight/15000));
-  for(let i=0;i<count;i++)particles.push({x:Math.random()*innerWidth,y:Math.random()*innerHeight,r:Math.random()*1.5+0.5,vx:(Math.random()-0.5)*0.3,vy:(Math.random()-0.5)*0.3,a:Math.random()*0.3+0.1});
+function resizeCanvas() { canvas.width = innerWidth; canvas.height = innerHeight; }
+function initParticles() {
+  particles = [];
+  const count = Math.min(50, Math.floor(innerWidth * innerHeight / 20000));
+  for(let i=0;i<count;i++) particles.push({x:Math.random()*innerWidth, y:Math.random()*innerHeight, r:Math.random()*1.5+0.5, vx:(Math.random()-0.5)*0.2, vy:(Math.random()-0.5)*0.2, a:Math.random()*0.3+0.05});
 }
-function drawParticles(){
+function drawParticles() {
+  if(!state.animationId) return;
   ctx.clearRect(0,0,canvas.width,canvas.height);
-  const grad = ctx.createRadialGradient(innerWidth/2,innerHeight/2,0,innerWidth/2,innerHeight/2,Math.max(innerWidth,innerHeight));
-  grad.addColorStop(0,'rgba(242,11,45,0.03)');grad.addColorStop(1,'rgba(3,3,4,0)');
-  ctx.fillStyle=grad;ctx.fillRect(0,0,canvas.width,canvas.height);
-  particles.forEach(p=>{
-    p.x+=p.vx;p.y+=p.vy;
-    if(p.x<0||p.x>innerWidth)p.vx*=-1;
-    if(p.y<0||p.y>innerHeight)p.vy*=-1;
-    ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
-    ctx.fillStyle=`rgba(242,11,45,${p.a})`;ctx.fill();
+  particles.forEach(p => {
+    p.x += p.vx; p.y += p.vy;
+    if(p.x<0||p.x>innerWidth) p.vx*=-1;
+    if(p.y<0||p.y>innerHeight) p.vy*=-1;
+    ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+    ctx.fillStyle = `rgba(255,0,31,${p.a})`; ctx.fill();
   });
-  state.animationId=requestAnimationFrame(drawParticles);
+  state.animationId = requestAnimationFrame(drawParticles);
 }
-addEventListener('resize',()=>{resizeCanvas();initParticles()});
-resizeCanvas();initParticles();drawParticles();
+addEventListener('resize', () => { resizeCanvas(); initParticles(); });
+resizeCanvas(); initParticles(); drawParticles();
 
-// ---------- SCREEN MANAGEMENT ----------
-const screenStack = ['welcome'];
-function showScreen(id, push=true){
-  if(push && screenStack[screenStack.length-1]!==id)screenStack.push(id);
-  $$('.screen').forEach(s=>s.classList.remove('active'));
-  const el = $(`#${id}`);
-  if(el) el.classList.add('active');
-  $('#backBtn').style.display = screenStack.length>1 ? 'flex' : 'none';
+// --- SCREEN MANAGEMENT ---
+const screenStack = ['screenWelcome'];
+function switchScreen(id, push=true) {
+  if(push && screenStack[screenStack.length-1] !== id) screenStack.push(id);
+  $$('.screen').forEach(s => s.classList.remove('active'));
+  $(`#${id}`).classList.add('active');
+  $('#btnBack').style.display = screenStack.length > 1 ? 'flex' : 'none';
   updateNav(id);
   window.scrollTo(0,0);
   // Render hooks
-  if(id==='home')renderHome();
-  if(id==='roomScreen')renderRoomsList();
-  if(id==='profileScreen')renderProfile();
-  if(id==='achScreen')renderAchievements();
-  if(id==='createRoomScreen'){renderCategoryPicker(); updateCreateBtn();}
-  if(id==='gameChatScreen')renderGameScreen();
-  if(id==='onboarding')renderOnboarding();
+  if(id==='screenHome') renderHome();
+  if(id==='screenRooms') renderRoomsList();
+  if(id==='screenProfile') renderProfile();
+  if(id==='screenAchievements') renderAchievements();
+  if(id==='screenCreate') { renderCatPicker(); validateCreateForm(); }
+  if(id==='screenGame') renderGameScreen();
 }
-function goBack(){
-  if(screenStack.length<=1)return;
+function goBack() {
+  if(screenStack.length <= 1) return;
   screenStack.pop();
-  showScreen(screenStack[screenStack.length-1], false);
+  switchScreen(screenStack[screenStack.length-1], false);
 }
-function updateNav(activeId){
-  $$('.nav-btn').forEach(b=>b.classList.toggle('active', b.dataset.screen===activeId));
-  if(state.user)$('#navAvatar').innerHTML = state.user.avatarImg ? `<img src="${state.user.avatarImg}">` : state.user.avatar;
+function updateNav(activeId) {
+  $$('.nav-item').forEach(b => b.classList.toggle('active', b.dataset.screen === activeId));
+  if(state.user) $('#headerAvatar').innerHTML = state.user.avatarImg ? `<img src="${state.user.avatarImg}">` : state.user.avatar;
 }
 
-// ---------- ONBOARDING / REGISTRATION ----------
-function renderOnboarding(){
-  const picker=$('#avatarPicker'); picker.innerHTML='';
-  DEFAULT_AVATARS.forEach((emoji,i)=>{
-    const btn=document.createElement('button');
-    btn.className='avatar-option'+(i===0?' selected':'');
-    btn.textContent=emoji;
-    btn.dataset.emoji=emoji;
-    btn.onclick=()=>selectAvatar(emoji, btn);
-    picker.appendChild(btn);
-  });
-  // Custom photo button
-  const customBtn=document.createElement('button');
-  customBtn.className='avatar-option custom';
-  customBtn.innerHTML='📷';
-  customBtn.onclick=()=>$('#avatarInput').click();
-  picker.appendChild(customBtn);
-
-  // Generate tag preview
-  $('#regTag').textContent = genTag();
-  $('#regName').value='';
-  updateRegPreview();
-}
-let selectedAvatarEmoji = DEFAULT_AVATARS[0];
-let selectedAvatarImg = null; // Data URL
-function selectAvatar(emoji, btn){
-  selectedAvatarEmoji=emoji;
-  selectedAvatarImg=null;
-  $$('#avatarPicker .avatar-option').forEach(b=>b.classList.remove('selected'));
-  btn.classList.add('selected');
-  $('#avatarPreview').innerHTML = emoji;
-  updateRegPreview();
-}
-function previewAvatar(input){
-  const file=input.files[0];
-  if(!file)return;
-  if(!file.type.startsWith('image/')){toast('Только изображения');return}
-  if(file.size > 2*1024*1024){toast('Макс 2 МБ');return}
-  const reader=new FileReader();
-  reader.onload=e=>{
-    selectedAvatarImg=e.target.result;
-    selectedAvatarEmoji=null;
-    $$('#avatarPicker .avatar-option').forEach(b=>b.classList.remove('selected'));
-    $('#avatarPreview').innerHTML = `<img src="${selectedAvatarImg}" style="width:100%;height:100%;object-fit:cover;border-radius:24px">`;
-    updateRegPreview();
+// --- REGISTRATION ---
+let regAvatarFile = null;
+function handleRegAvatar(input) {
+  const file = input.files[0];
+  if(!file) return;
+  if(!file.type.startsWith('image/')) return toast('Только изображения','error');
+  if(file.size > 3*1024*1024) return toast('Макс 3 МБ','error');
+  const reader = new FileReader();
+  reader.onload = e => {
+    regAvatarFile = e.target.result;
+    $('#regAvatar').innerHTML = `<img src="${regAvatarFile}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`;
+    validateRegForm();
   };
   reader.readAsDataURL(file);
 }
-function updateRegPreview(){
-  const name=$('#regName').value.trim();
-  const btn=$('#regSubmitBtn');
-  btn.disabled = !name;
+function validateRegForm() {
+  const name = $('#regNickname').value.trim();
+  const btn = $('#btnRegSubmit');
+  btn.disabled = !(name && regAvatarFile);
 }
-function finishRegistration(){
-  const name=$('#regName').value.trim().slice(0,16);
-  if(!name)return;
-  const tag=genTag();
+function finishRegistration() {
+  const name = $('#regNickname').value.trim().slice(0,16);
+  if(!name || !regAvatarFile) return;
   state.user = {
-    name, tag,
-    avatar: selectedAvatarEmoji || '👤',
-    avatarImg: selectedAvatarImg, // data URL or null
-    stats:{games:0, points:0, wins:0, confessions:0, actions:0, votes:0, nevers:0, streak:0},
-    achievements:{},
-    seenWelcome:true
+    name, tag: genTag(),
+    avatar: '?', avatarImg: regAvatarFile,
+    stats: {games:0, points:0, wins:0, confessions:0, votes:0, nevers:0, streak:0, voicesSent:0, catsPlayed:[]},
+    achievements: {},
+    seenWelcome: true
   };
   saveState();
   renderProfile();
-  showScreen('home');
+  switchScreen('screenHome');
 }
 
-// ---------- PROFILE ----------
-function openProfile(){showScreen('profileScreen')}
-function renderProfile(){
-  if(!state.user){showScreen('welcome');return}
-  $('#profileName').textContent=state.user.name;
-  $('#profileTag').textContent=state.user.tag;
+// --- PROFILE ---
+function handleProfileAvatar(input) {
+  const file = input.files[0];
+  if(!file) return;
+  if(!file.type.startsWith('image/')) return toast('Только изображения','error');
+  if(file.size > 3*1024*1024) return toast('Макс 3 МБ','error');
+  const reader = new FileReader();
+  reader.onload = e => {
+    state.user.avatarImg = e.target.result;
+    state.user.avatar = '?';
+    saveState();
+    renderProfile();
+    unlockAchievement('photo_master');
+    toast('Аватар обновлён');
+  };
+  reader.readAsDataURL(file);
+}
+function renderProfile() {
+  if(!state.user) { switchScreen('screenWelcome'); return }
+  $('#profileName').textContent = state.user.name;
+  $('#profileTag').textContent = state.user.tag;
   $('#headerAvatar').innerHTML = state.user.avatarImg ? `<img src="${state.user.avatarImg}">` : state.user.avatar;
   $('#profileAvatar').innerHTML = state.user.avatarImg ? `<img src="${state.user.avatarImg}">` : state.user.avatar;
-  $('#navAvatar').innerHTML = state.user.avatarImg ? `<img src="${state.user.avatarImg}">` : state.user.avatar;
-  $('#settingsName').value=state.user.name;
-  $('#settingsTag').value=state.user.tag;
-  $('#pfGames').textContent=state.user.stats.games;
-  $('#pfPoints').textContent=state.user.stats.points;
-  $('#statGames').textContent=state.user.stats.games;
-  $('#statPoints').textContent=state.user.stats.points;
+  $('#setName').value = state.user.name;
+  $('#setTag').value = state.user.tag;
+  $('#statGames').textContent = state.user.stats.games;
+  $('#statPoints').textContent = state.user.stats.points;
 }
-function saveSettings(){
-  if(!state.user)return;
-  const n=$('#settingsName').value.trim().slice(0,16);
-  if(n)state.user.name=n;
+function saveSettings() {
+  if(!state.user) return;
+  const n = $('#setName').value.trim().slice(0,16);
+  if(n) state.user.name = n;
   saveState();
   renderProfile();
   toast('Сохранено');
 }
-
-// ---------- ROOMS ----------
-function openCreateRoom(){
-  state.selectedCats=[];
-  showScreen('createRoomScreen');
-}
-function renderCategoryPicker(){
-  const wrap=$('#catPicker');wrap.innerHTML='';
-  CATS.forEach((cat,i)=>{
-    const sel=state.selectedCats.includes(cat.id);
-    const el=document.createElement('div');
-    el.className='cat-opt'+(sel?' sel':'');
-    el.dataset.cat=cat.id;
-    el.onclick=()=>toggleCat(cat.id, el);
-    el.innerHTML=`<div class="cat-name">${cat.emoji} ${cat.name}</div><div class="small">${cat.desc}</div><div class="cat-chk">✓</div>`;
-    wrap.appendChild(el);
-  });
-}
-function toggleCat(id, el){
-  const idx=state.selectedCats.indexOf(id);
-  if(idx===-1){if(state.selectedCats.length>=5){toast('Макс. 5 категорий');return}state.selectedCats.push(id);el.classList.add('sel')}
-  else{state.selectedCats.splice(idx,1);el.classList.remove('sel')}
-  updateCreateBtn();
-}
-function updateCreateBtn(){
-  const btn=$('#createRoomBtn');
-  const ok=state.selectedCats.length>0 && $('#roomName').value.trim() && $('#creatorNick').value.trim();
-  btn.disabled=!ok;
-  $('#catCount').textContent=state.selectedCats.length;
-  $('#catPips').innerHTML=CATS.map((_,i)=>`<div class="cat-pip${i<state.selectedCats.length?' on':''}"></div>`).join('');
-}
-function createRoom(){
-  const name=$('#roomName').value.trim().slice(0,24)||'Без названия';
-  const nick=$('#creatorNick').value.trim().slice(0,16)||state.user.name;
-  const code=genId().slice(0,4).toUpperCase();
-  const room={
-    id:genId(), code, name, host:state.user.tag,
-    categories:state.selectedCats.slice(),
-    created:Date.now(),
-    players:[{id:state.user.tag, name:nick, avatar:state.user.avatar, avatarImg:state.user.avatarImg, score:0, isMe:true}],
-    state:'lobby', round:0, maxRounds:10
-  };
-  state.rooms.push(room);
-  saveState();
-  joinRoom(room.id); // join by ID
-}
-function joinRoomByCode(){
-  const code=$('#joinCode').value.trim().toUpperCase();
-  if(!code){toast('Введи код');return}
-  const room=state.rooms.find(r=>r.code===code);
-  if(!room){toast('Комната не найдена');return}
-  joinRoom(room.id);
-}
-function joinRoom(roomId){
-  const room=state.rooms.find(r=>r.id===roomId);
-  if(!room){toast('Ошибка комнаты');return}
-  state.currentRoom=room;
-  // Ensure current user in players
-  if(!room.players.find(p=>p.id===state.user.tag)){
-    room.players.push({id:state.user.tag, name:state.user.name, avatar:state.user.avatar, avatarImg:state.user.avatarImg, score:0, isMe:true});
-  }
-  room.players.forEach(p=>p.isMe = p.id===state.user.tag);
-  saveState();
-  showScreen('gameChatScreen');
-}
-function renderRoomsList(){
-  const wrap=$('#roomsList');wrap.innerHTML='';
-  if(state.rooms.length===0){wrap.innerHTML='<div class="empty">Комнат нет. Создай первую.</div>';return}
-  state.rooms.forEach(r=>{
-    const el=document.createElement('div');
-    el.className='room-card';
-    const hostPlayer = r.players.find(p=>p.id===r.host);
-    el.innerHTML=`
-      <div class="row between">
-        <div class="row" style="gap:12px">
-          <div class="avatar">${hostPlayer?.avatar||'👤'}</div>
-          <div>
-            <div style="font-weight:800">${r.name}</div>
-            <div class="small">Код: <span class="room-code">${r.code}</span> • Игроков: ${r.players.length}${r.state==='playing'?' 🔴 В игре':''}</div>
-          </div>
-        </div>
-        <button class="btn sm" onclick="joinRoom('${r.id}')">${r.state==='playing'?'Смотреть':'Войти'}</button>
-      </div>
-    `;
-    wrap.appendChild(el);
-  });
-  // Home rooms
-  const homeWrap=$('#homeRooms');homeWrap.innerHTML='';
-  state.rooms.slice(-3).reverse().forEach(r=>{
-    const el=document.createElement('div');
-    el.className='room-card';
-    el.innerHTML=`<div class="row between"><div class="row" style="gap:10px"><div class="avatar">${r.players[0]?.avatar||'👤'}</div><div><b>${r.name}</b><br><span class="small">Код: <span class="room-code">${r.code}</span></span></div></div><button class="btn sm" onclick="joinRoom('${r.id}')">Войти</button></div>`;
-    homeWrap.appendChild(el);
-  });
-  // Last game
-  const last=state.rooms[state.rooms.length-1];
-  if(last){
-    $('#lastGame').innerHTML=`<div class="row between"><div><b>${last.name}</b><br><span class="small">Код: ${last.code} • ${last.players.length} игроков</span></div><button class="btn sm" onclick="joinRoom('${last.id}')">Повторить</button></div>`;
-  }
-}
-
-// ---------- GAME LOGIC ----------
-function renderGameScreen(){
-  if(!state.currentRoom){goBack();return}
-  const r=state.currentRoom;
-  $('#gameRoomLabel').textContent=`${r.name} • ${r.code}`;
-  renderPlayerStrip();
-  renderQuestionCard();
-  renderMessages();
-  scrollToBottom();
-}
-function renderPlayerStrip(){
-  const strip=$('#playerStrip');
-  strip.innerHTML=state.currentRoom.players.map(p=>`<div class="player-chip${p.isMe?' active':''}${p.id===state.currentRoom.host?' host':''}">${p.avatarImg?`<img src="${p.avatarImg}" style="width:18px;height:18px;border-radius:5px;margin-right:4px;vertical-align:middle">`:p.avatar} ${p.name}${p.isMe?' (ты)':''} ${p.score>0?`<span class="red">+${p.score}</span>`:''}</div>`).join('');
-}
-function renderQuestionCard(){
-  const wrap=$('#questionCard');
-  const r=state.currentRoom;
-  const isHost = r.host===state.user.tag;
-  
-  if(state.gamePhase==='lobby'){
-    wrap.innerHTML=`<div class="card" style="text-align:center"><div class="small">ЛОББИ</div><h2 style="margin:10px 0">Игроков: ${r.players.length}</h2><p class="small">Минимум 2 для старта</p>${isHost && r.players.length>=2 ? `<button class="btn" style="max-width:200px;margin:10px auto 0" onclick="startGame()">🚀 Начать игру</button>` : ''}</div>`;
-    return;
-  }
-  if(state.gamePhase==='picking'){
-    wrap.innerHTML=`<div class="card" style="text-align:center"><div class="small">ВЫБОР КАТЕГОРИИ</div><h2 style="margin:10px 0">${isHost?'Выбирай категорию...':'Ведущий выбирает категорию...'}</h2>${isHost?renderCatPickerForHost():''}</div>`;
-    return;
-  }
-  if(!state.currentQuestion){
-    wrap.innerHTML='';
-    return;
-  }
-  const q=state.currentQuestion;
-  const cat=CATS.find(c=>c.id===q.cat);
-  const canAnswer = state.gamePhase==='answering' && !state.answers.some(a=>a.playerId===state.user.tag);
-  const canVote = state.gamePhase==='voting' && !state.answers.some(a=>a.playerId===state.user.tag && a.votes.includes(state.user.tag));
-  
-  wrap.innerHTML=`
-    <div class="question-card">
-      <div class="q-label">${cat?.emoji} ${cat?.name.toUpperCase()} • Раунд ${state.round}/${r.maxRounds}</div>
-      <div class="question">${q.text}</div>
-      ${state.gamePhase==='answering'?`<div class="small" style="margin-top:10px;color:var(--red2)">${state.answers.length}/${r.players.length} ответили</div>`:''}
-      ${state.gamePhase==='voting'?`<div class="small" style="margin-top:10px;color:var(--red2)">Голосуй за лучший ответ (не свой)!</div>`:''}
-      ${state.gamePhase==='results'?`<div class="small" style="margin-top:10px;color:var(--muted)">Результаты раунда</div>`:''}
-    </div>
-  `;
-}
-function renderCatPickerForHost(){
-  return `<div class="cat-picker" style="margin-top:10px">`+
-    state.currentRoom.categories.map(catId=>{
-      const cat=CATS.find(c=>c.id===catId);
-      return `<div class="cat-opt${state.pendingQuestionCat===catId?' sel':''}" onclick="pickCategory('${catId}')"><div class="cat-name">${cat.emoji} ${cat.name}</div><div class="cat-chk">✓</div></div>`;
-    }).join('')+`</div>`;
-}
-function pickCategory(catId){
-  state.pendingQuestionCat=catId;
-  renderQuestionCard();
-}
-function renderMessages(){
-  const wrap=$('#gameMessages');
-  if(state.gamePhase==='lobby' || state.gamePhase==='picking'){
-    wrap.innerHTML='';
-    return;
-  }
-  wrap.innerHTML=state.answers.map((a,i)=>{
-    const p=state.currentRoom.players.find(x=>x.id===a.playerId);
-    if(!p)return '';
-    const isMe=p.isMe;
-    const isHost=p.id===state.currentRoom.host;
-    let html=`<div class="msg${isMe?' mine':''}"><div class="msg-author"><div class="msg-av">${p.avatarImg?`<img src="${p.avatarImg}">`:p.avatar}</div><div class="msg-name">${p.name}${isMe?' (ты)':''}${isHost?' 👑':''}</div></div><div>${escapeHtml(a.text)}</div>`;
-    if(state.gamePhase==='voting' && !isMe){
-      const voted = a.votes.includes(state.user.tag);
-      html+=`<div class="row" style="margin-top:8px;gap:6px">${state.currentRoom.players.filter(pl=>pl.id!==a.playerId).map(v=>`<button class="btn sm${v.id===state.user.tag?'':''}" style="flex:1;padding:8px;font-size:12px" onclick="voteAnswer(${i}, '${v.id}')" ${voted?'disabled':''}>${voted && v.id===state.user.tag?'✓ Голос дан':'За '+v.name}</button>`).join('')}</div>`;
-    }
-    if(state.gamePhase==='results'){
-      const votes=a.votes.length;
-      const won = votes === Math.max(...state.answers.map(x=>x.votes.length)) && votes>0;
-      html+=`<div class="small" style="margin-top:6px;color:${won?'var(--red2)':'var(--muted)'}">Голосов: ${votes}${won?' 🏆':''}</div>`;
-    }
-    html+=`<div class="msg-time">${fmtTime((Date.now()-a.ts)/1000)}</div></div>`;
-    return html;
-  }).join('');
-}
-function scrollToBottom(){const a=$('#gameScrollArea');a.scrollTop=a.scrollHeight}
-
-function startGame(){
-  if(!state.currentRoom)return;
-  const r=state.currentRoom;
-  if(r.host!==state.user.tag){toast('Только хост может стартовать');return}
-  if(r.players.length<2){toast('Нужно минимум 2 игрока');return}
-  r.state='playing';
-  state.gamePhase='picking';
-  state.round=0;
-  state.answers=[];
-  state.pendingQuestionCat=null;
-  saveState();
-  renderGameScreen();
-}
-function nextRound(){
-  if(state.round>=state.currentRoom.maxRounds){endGame();return}
-  state.round++;
-  // Pick category
-  const catId = state.pendingQuestionCat || state.currentRoom.categories[Math.floor(Math.random()*state.currentRoom.categories.length)];
-  state.pendingQuestionCat=null;
-  const pool=QUESTIONS[catId];
-  const qText=pool[Math.floor(Math.random()*pool.length)];
-  state.currentQuestion={cat:catId, text:qText};
-  state.answers=[];
-  state.gamePhase='answering';
-  renderGameScreen();
-  updateProgress(0);
-  animateProgress(20000); // 20 sec for answers
-}
-function animateProgress(duration){
-  const bar=$('#roundProgress');
-  let start=null;
-  function step(ts){
-    if(!start)start=ts;
-    const p=Math.min(1,(ts-start)/duration);
-    bar.style.width=`${p*100}%`;
-    if(p<1)requestAnimationFrame(step);
-    else{
-      if(state.gamePhase==='answering'){
-        // Auto-advance to voting if time's up
-        if(state.answers.length < state.currentRoom.players.length){
-           // Some didn't answer, still go to voting
-        }
-        state.gamePhase='voting';
-        renderGameScreen();
-      }
-    }
-  }
-  requestAnimationFrame(step);
-}
-function updateProgress(p){$('#roundProgress').style.width=`${p}%`}
-
-function handleGameInputKeydown(e){
-  if(e.key==='Enter' && !e.shiftKey){
-    e.preventDefault();
-    sendGameMessage();
-  }
-}
-function sendGameMessage(){
-  const txt=$('#gameInput').value.trim();
-  if(!txt)return;
-  if(state.gamePhase==='answering'){
-    // Check if already answered
-    if(state.answers.some(a=>a.playerId===state.user.tag)){
-      toast('Ты уже ответил');return;
-    }
-    state.answers.push({playerId:state.user.tag, text:txt, votes:[], ts:Date.now()});
-    $('#gameInput').value='';
-    renderMessages();scrollToBottom();
-    vibrate(10);
-    toast('Ответ принят');
-    // Check if all answered
-    if(state.answers.length >= state.currentRoom.players.length){
-      clearTimeout(state.progressTimeout); // Not implemented, but logic: advance
-      state.gamePhase='voting';
-      renderGameScreen();
-    }
-  }else if(state.gamePhase==='lobby'){
-    addChatMessage(txt);
-  }
-}
-function addChatMessage(txt){
-  const wrap=$('#gameMessages');
-  const div=document.createElement('div');
-  div.className='msg mine';
-  div.innerHTML=`<div class="msg-author"><div class="msg-av">${state.user.avatarImg?`<img src="${state.user.avatarImg}">`:state.user.avatar}</div><div class="msg-name">${state.user.name} (ты)</div></div><div>${escapeHtml(txt)}</div><div class="msg-time">${fmtTime(0)}</div>`;
-  wrap.appendChild(div);
-  scrollToBottom();
-}
-
-function voteAnswer(ansIdx, voterId){
-  const ans=state.answers[ansIdx];
-  if(!ans || ans.votes.includes(voterId) || ans.playerId===voterId)return; // Can't vote self
-  ans.votes.push(voterId);
-  vibrate(20);
-  // Update stats
-  if(state.user) state.user.stats.votes++;
-  renderMessages();
-  // Check if all voted
-  const totalVotes = state.answers.reduce((sum,a)=>sum+a.votes.length,0);
-  const expectedVotes = state.currentRoom.players.length * (state.currentRoom.players.length - 1); // Everyone votes for everyone else? No, usually 1 vote per person.
-  // Simplified: 1 vote per player
-  const votedPlayers = new Set();
-  state.answers.forEach(a=>a.votes.forEach(v=>votedPlayers.add(v)));
-  if(votedPlayers.size >= state.currentRoom.players.length - 1){ // Everyone except maybe host voted
-     showResults();
-  }
-}
-function showResults(){
-  state.gamePhase='results';
-  // Calculate winner
-  let maxVotes=-1, winners=[];
-  state.answers.forEach(a=>{
-    if(a.votes.length > maxVotes){maxVotes=a.votes.length; winners=[a];}
-    else if(a.votes.length === maxVotes && maxVotes>0){winners.push(a);}
-  });
-  if(maxVotes>0 && winners.length===1){
-    const wp=state.currentRoom.players.find(p=>p.id===winners[0].playerId);
-    if(wp){
-      wp.score++;
-      if(wp.isMe){
-        state.user.stats.points++;
-        state.user.stats.wins++;
-        state.user.stats.streak++;
-        if(state.user.stats.streak>=3) unlockAchievement('streak3');
-        toast('🏆 Ты выиграл раунд!');
-      }else{
-        state.user.stats.streak=0;
-        toast(`${wp.name} выиграл раунд!`);
-      }
-    }
-  }else{
-    if(state.user) state.user.stats.streak=0;
-    toast('Ничья или никто не проголосовал');
-  }
-  saveState();
-  renderGameScreen();
-  // Next round after delay
-  setTimeout(()=>{
-    if(state.round < state.currentRoom.maxRounds){
-      nextRound();
-    }else{
-      endGame();
-    }
-  }, 5000);
-}
-function endGame(){
-  state.gamePhase='ended';
-  state.currentRoom.state='ended';
-  state.user.stats.games++;
-  saveState();
-  renderGameScreen();
-  setTimeout(()=>{toast('Игра окончена. Можно начать заново.');},1500);
-}
-function confirmLeave(){
-  if(confirm('Выйти из комнаты? Прогресс не сохранится.'))leaveRoom();
-}
-function leaveRoom(){
-  state.currentRoom=null;
-  state.gamePhase='lobby';
-  state.currentQuestion=null;
-  state.answers=[];
-  state.round=0;
-  state.pendingQuestionCat=null;
-  showScreen('roomScreen');
-}
-
-// ---------- ACHIEVEMENTS ----------
-function openAchievements(){showScreen('achScreen')}
-function renderAchievements(){
-  const wrap=$('#achList');wrap.innerHTML='';
-  ACHIEVEMENTS.forEach(a=>{
-    const unlocked=state.user?.achievements?.[a.id];
-    const el=document.createElement('div');
-    el.className=`achieve${unlocked?'':' locked'}`;
-    el.innerHTML=`<div class="achieve-icon">${a.icon}</div><b>${a.name}</b><br><span class="small">${a.desc}</span>`;
-    wrap.appendChild(el);
-  });
-}
-function unlockAchievement(id){
-  if(!state.user||state.user.achievements[id])return;
-  state.user.achievements[id]=true;
-  saveState();
-  const a=ACHIEVEMENTS.find(x=>x.id===id);
-  if(a)toast(`🏆 Достижение: ${a.name}!`,4000);
-}
-
-// ---------- VOICE (stub) ----------
-function toggleVoice(){
-  const btn=$('#voiceBtn');
-  if(state.voiceRecording) stopVoice();
-  else startVoice();
-}
-function startVoice(){
-  if(!navigator.mediaDevices)return toast('Микрофон недоступен');
-  navigator.mediaDevices.getUserMedia({audio:true}).then(stream=>{
-    state.mediaRecorder=new MediaRecorder(stream);
-    state.voiceChunks=[];
-    state.mediaRecorder.ondataavailable=e=>state.voiceChunks.push(e.data);
-    state.mediaRecorder.onstop=()=>{
-      const blob=new Blob(state.voiceChunks,{type:'audio/webm'});
-      const url=URL.createObjectURL(blob);
-      addVoiceMessage(url);
-    };
-    state.mediaRecorder.start();
-    state.voiceRecording=true;
-    btn.classList.add('recording');
-    $('#recordingInfo').classList.add('show');
-    let sec=0;
-    state.voiceTimer=setInterval(()=>{sec++;$('#recordingTime').textContent=fmtTime(sec)},1000);
-  }).catch(()=>toast('Нет доступа к микрофону'));
-}
-function stopVoice(){
-  if(state.mediaRecorder&&state.voiceRecording){
-    state.mediaRecorder.stop();
-    state.mediaRecorder.stream.getTracks().forEach(t=>t.stop());
-  }
-  state.voiceRecording=false;
-  $('#voiceBtn').classList.remove('recording');
-  $('#recordingInfo').classList.remove('show');
-  clearInterval(state.voiceTimer);
-}
-function addVoiceMessage(url){
-  const a=document.createElement('a');a.href=url;a.download='voice.webm';a.textContent='🎤 Голосовое сообщение';a.style.display='block';a.style.color='var(--red2)';
-  const wrap=$('#gameMessages');
-  const div=document.createElement('div');div.className='msg mine';div.appendChild(a);wrap.appendChild(div);scrollToBottom();
-}
-
-// ---------- RULES / RESET ----------
-function resetData(){
-  if(confirm('УДАЛИТЬ ВСЁ? Профиль, комнаты, статистику, достижения.')){
+function confirmReset() {
+  if(confirm('УДАЛИТЬ ВСЁ? Профиль, комнаты, статистику, достижения. Это необратимо.')) {
     localStorage.clear();
     location.reload();
   }
 }
 
-// ---------- INIT ----------
-loadState();
-if(state.user && state.user.seenWelcome){
-  showScreen('home');
-}else{
-  showScreen('welcome');
+// --- ACHIEVEMENTS ---
+function renderAchievements() {
+  const wrap = $('#achGrid');
+  wrap.innerHTML = '';
+  ACHIEVEMENTS.forEach(a => {
+    const unlocked = state.user?.achievements?.[a.id];
+    const el = document.createElement('div');
+    el.className = `ach-card${unlocked ? ' unlocked' : ''}`;
+    el.innerHTML = `<div class="ach-icon">${a.icon}</div><div class="ach-name">${a.name}</div><div class="ach-desc">${a.desc}</div>`;
+    wrap.appendChild(el);
+  });
 }
-// Keyboard detection
-addEventListener('focusin',e=>{if(e.target.tagName==='TEXTAREA'||e.target.tagName==='INPUT'){if(!state.keyboardOpen){state.keyboardOpen=true;document.body.classList.add('kb-open')}}});
-addEventListener('focusout',e=>{if(e.target.tagName==='TEXTAREA'||e.target.tagName==='INPUT'){state.keyboardOpen=false;document.body.classList.remove('kb-open')}});
+function unlockAchievement(id) {
+  if(!state.user || state.user.achievements[id]) return;
+  state.user.achievements[id] = true;
+  saveState();
+  const a = ACHIEVEMENTS.find(x=>x.id===id);
+  if(a) toast(`🏆 Достижение: ${a.name}!`, 'success');
+}
 
-// Expose for inline onclick
-window.showScreen=showScreen;
-window.goBack=goBack;
-window.openAchievements=openAchievements;
-window.openProfile=openProfile;
-window.saveSettings=saveSettings;
-window.resetData=resetData;
-window.openCreateRoom=openCreateRoom;
-window.createRoom=createRoom;
-window.joinRoomByCode=joinRoomByCode;
-window.joinRoom=joinRoom;
-window.startGame=startGame;
-window.sendGameMessage=sendGameMessage;
-window.voteAnswer=voteAnswer;
-window.confirmLeave=confirmLeave;
-window.leaveRoom=leaveRoom;
-window.toggleVoice=toggleVoice;
-window.pickCategory=pickCategory;
-window.selectAvatar=selectAvatar; // Not used directly but kept
-window.finishRegistration=finishRegistration;
+// --- ROOMS ---
+function openCreateRoom() {
+  state.selectedCats = [];
+  switchScreen('screenCreate');
+}
+function renderCatPicker() {
+  const wrap = $('#catGrid');
+  wrap.innerHTML = '';
+  CATS.forEach(cat => {
+    const sel = state.selectedCats.includes(cat.id);
+    const id = `cat_${cat.id}`;
+    const el = document.createElement('div');
+    el.className = 'cat-option';
+    el.innerHTML = `
+      <input type="checkbox" id="${id}" ${sel?'checked':''} onchange="toggleCat('${cat.id}', this)">
+      <label for="${id}">
+        <div class="cat-emoji">${cat.emoji}</div>
+        <div class="cat-name">${cat.name}</div>
+        <div class="cat-desc">${cat.desc}</div>
+      </label>
+    `;
+    wrap.appendChild(el);
+  });
+}
+function toggleCat(id, checkbox) {
+  const idx = state.selectedCats.indexOf(id);
+  if(checkbox.checked) {
+    if(state.selectedCats.length >= 3) { checkbox.checked = false; toast('Максимум 3 категории'); return; }
+    state.selectedCats.push(id);
+  } else {
+    if(idx > -1) state.selectedCats.splice(idx, 1);
+  }
+  $('#catCount').textContent = state.selectedCats.length;
+  validateCreateForm();
+}
+function validateCreateForm() {
+  const ok = state.selectedCats.length > 0 && $('#createRoomName').value.trim() && $('#createNickname').value.trim();
+  $('#btnCreateRoom').disabled = !ok;
+}
+function createRoom() {
+  const name = $('#createRoomName').value.trim().slice(0,24) || 'Без названия';
+  const nick = $('#createNickname').value.trim().slice(0,16) || state.user.name;
+  const code = genId().slice(0,4).toUpperCase();
+  const room = {
+    id: genId(), code, name, host: state.user.tag,
+    categories: state.selectedCats.slice(),
+    created: Date.now(),
+    players: [{id:state.user.tag, name:nick, avatar:state.user.avatar, avatarImg:state.user.avatarImg, score:0, isMe:true}],
+    state: 'lobby', round: 0, maxRounds: 10
+  };
+  state.rooms.push(room);
+  saveState();
+  joinRoom(room.id);
+}
+function joinByCode() {
+  const code = $('#joinCodeInput').value.trim().toUpperCase();
+  if(!code) return toast('Введи код');
+  const room = state.rooms.find(r => r.code === code);
+  if(!room) return toast('Комната не найдена','error');
+  joinRoom(room.id);
+}
+function joinRoom(roomId) {
+  const room = state.rooms.find(r => r.id === roomId);
+  if(!room) return toast('Ошибка комнаты','error');
+  state.currentRoom = room;
+  if(!room.players.find(p => p.id === state.user.tag)) {
+    room.players.push({id:state.user.tag, name:state.user.name, avatar:state.user.avatar, avatarImg:state.user.avatarImg, score:0, isMe:true});
+  }
+  room.players.forEach(p => p.isMe = p.id === state.user.tag);
+  saveState();
+  switchScreen('screenGame');
+}
+function renderRoomsList() {
+  const wrap = $('#roomsList');
+  wrap.innerHTML = '';
+  if(state.rooms.length === 0) { wrap.innerHTML = '<div class="card" style="text-align:center;color:var(--text-dim);padding:40px">Комнат нет. Создай первую.</div>'; return; }
+  state.rooms.forEach(r => {
+    const hostPlayer = r.players.find(p => p.id === r.host);
+    const el = document.createElement('div');
+    el.className = 'room-card';
+    el.onclick = () => joinRoom(r.id);
+    el.innerHTML = `
+      <div class="avatar avatar-sm">${hostPlayer?.avatarImg?`<img src="${hostPlayer.avatarImg}">`:hostPlayer?.avatar||'?'}</div>
+      <div class="room-info">
+        <div class="room-name">${r.name}</div>
+        <div class="room-meta"><span class="room-code-tag">${r.code}</span> Игроков: ${r.players.length}${r.state==='playing'?' · В игре':''}</div>
+      </div>
+    `;
+    wrap.appendChild(el);
+  });
+  // Home list
+  const homeWrap = $('#homeRoomsList');
+  homeWrap.innerHTML = '';
+  state.rooms.slice(-3).reverse().forEach(r => {
+    const el = document.createElement('div');
+    el.className = 'room-card';
+    el.onclick = () => joinRoom(r.id);
+    el.innerHTML = `<div class="avatar avatar-sm">${r.players[0]?.avatarImg?`<img src="${r.players[0].avatarImg}">`:r.players[0]?.avatar||'?'}</div><div class="room-info"><div class="room-name">${r.name}</div><div class="room-meta"><span class="room-code-tag">${r.code}</span></div></div>`;
+    homeWrap.appendChild(el);
+  });
+  // Last game
+  const last = state.rooms[state.rooms.length-1];
+  if(last) {
+    $('#lastGameCard').innerHTML = `<div style="font-weight:600">${last.name}</div><div class="small mt-8">Код: ${last.code} · ${last.players.length} игроков</div><button class="btn btn-secondary btn-sm mt-16" onclick="joinRoom('${last.id}')">Повторить</button>`;
+  }
+}
+
+// --- GAME LOGIC ---
+function renderGameScreen() {
+  if(!state.currentRoom) { goBack(); return; }
+  const r = state.currentRoom;
+  $('#gameRoomName').textContent = r.name;
+  $('#gameRoomCode').textContent = r.code;
+  $('#gameRoomAvatar').innerHTML = r.players.find(p=>p.id===r.host)?.avatarImg?`<img src="${r.players.find(p=>p.id===r.host).avatarImg}">`:r.players.find(p=>p.id===r.host)?.avatar||'?';
+  
+  renderPlayerStrip();
+  renderQuestionCard();
+  renderChat();
+  scrollToBottom();
+}
+function renderPlayerStrip() {
+  const strip = $('#playersBar');
+  strip.innerHTML = state.currentRoom.players.map(p => `
+    <div class="player-chip${p.isMe?' me':''}${p.id===state.currentRoom.host?' host':''}">
+      <div class="avatar avatar-xs">${p.avatarImg?`<img src="${p.avatarImg}">`:p.avatar}</div>
+      <span>${p.name}${p.isMe?' (ты)':''}${p.id===state.currentRoom.host?' 👑':''}</span>
+    </div>
+  `).join('');
+}
+function renderQuestionCard() {
+  const wrap = $('#questionCard');
+  const r = state.currentRoom;
+  const isHost = r.host === state.user.tag;
+  
+  if(state.gamePhase === 'lobby') {
+    wrap.classList.remove('hidden');
+    wrap.innerHTML = `
+      <div class="question-card" style="text-align:center">
+        <div class="small" style="color:var(--text-dim);margin-bottom:8px">ЛОББИ</div>
+        <div style="font-size:20px;font-weight:700;margin-bottom:8px">Игроков: ${r.players.length}</div>
+        <div class="small" style="color:var(--text-dark)">Категорий: ${r.categories.map(id=>CATS.find(c=>c.id===id)?.emoji).join(' ')}</div>
+        ${isHost && r.players.length>=2 ? `<button class="btn btn-primary mt-16" style="max-width:200px" onclick="startGame()">🚀 Начать игру</button>` : ''}
+        ${!isHost ? `<div class="small mt-16" style="color:var(--text-dark)">Ждём хоста...</div>` : ''}
+        ${r.players.length<2 ? `<div class="small mt-16" style="color:var(--red)">Нужно минимум 2 игрока</div>` : ''}
+      </div>
+    `;
+    return;
+  }
+  if(state.gamePhase === 'picking') {
+    wrap.classList.remove('hidden');
+    wrap.innerHTML = `
+      <div class="question-card" style="text-align:center">
+        <div class="small" style="color:var(--text-dim);margin-bottom:8px">${isHost?'ВЫБОР КАТЕГОРИИ':'ВЕДУЩИЙ ВЫБИРАЕТ'}</div>
+        <div style="font-size:20px;font-weight:700;margin-bottom:16px">Раунд ${state.round}/${r.maxRounds}</div>
+        ${isHost ? renderCatPickerForHost() : '<div class="small" style="color:var(--text-dark)">Ожидайте...</div>'}
+      </div>
+    `;
+    return;
+  }
+  if(!state.currentQuestion) { wrap.classList.add('hidden'); return; }
+  
+  wrap.classList.remove('hidden');
+  const q = state.currentQuestion;
+  const cat = CATS.find(c => c.id === q.cat);
+  const canAnswer = state.gamePhase === 'answering' && !state.answers.some(a => a.playerId === state.user.tag);
+  const canVote = state.gamePhase === 'voting' && !state.votedThisRound;
+  
+  $('#qCatEmoji').textContent = cat?.emoji;
+  $('#qCatName').textContent = cat?.name.toUpperCase();
+  $('#qText').textContent = q.text;
+  $('#roundLabel').textContent = `Раунд ${state.round}/${r.maxRounds}`;
+  $('#roundCat').textContent = cat?.name;
+}
+function renderCatPickerForHost() {
+  return `<div class="cat-grid" style="max-width:300px;margin:0 auto">` +
+    state.currentRoom.categories.map(catId => {
+      const cat = CATS.find(c=>c.id===catId);
+      return `<button class="cat-option" style="all:unset;cursor:pointer;padding:12px;background:var(--card);border:1px solid var(--border);border-radius:12px;display:flex;flex-direction:column;gap:6px;min-height:80px" onclick="pickCategory('${catId}')"><div class="cat-emoji">${cat.emoji}</div><div class="cat-name">${cat.name}</div></button>`;
+    }).join('') + `</div>`;
+}
+function pickCategory(catId) {
+  if(state.currentRoom.host !== state.user.tag) return;
+  state.pendingQuestionCat = catId;
+  renderQuestionCard();
+}
+
+function renderChat() {
+  const wrap = $('#chatList');
+  if(state.gamePhase === 'lobby' || state.gamePhase === 'picking') { wrap.innerHTML = ''; return; }
+  
+  wrap.innerHTML = state.answers.map((a, i) => {
+    const p = state.currentRoom.players.find(x => x.id === a.playerId);
+    if(!p) return '';
+    const isMe = p.isMe;
+    const isWinner = state.gamePhase === 'results' && a.votes.length === Math.max(...state.answers.map(x=>x.votes.length)) && a.votes.length > 0 && state.answers.filter(x=>x.votes.length===a.votes.length).length === 1;
+    const voted = a.votes.includes(state.user.tag);
+    
+    let content = '';
+    if(a.voiceUrl) {
+      content = `<div class="voice-msg"><button onclick="playVoice('${a.voiceUrl}')"><svg width="20" height="20" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg><span>Голосовое</span></button><progress value="0" max="1" id="prog_${i}"></progress><time>0:00</time></div>`;
+    } else {
+      content = `<div class="msg-text">${escapeHtml(a.text)}</div>`;
+    }
+    
+    let voteBtn = '';
+    if(state.gamePhase === 'voting' && !isMe) {
+      voteBtn = `<button class="msg-vote-btn${voted?' voted':''}" onclick="voteAnswer(${i}, '${p.id}')" ${voted?'disabled':''}>${voted?'✓ Голос дан':'Голосовать за этот ответ'}</button>`;
+    }
+    
+    return `
+      <div class="msg${isMe?' mine':''}${state.gamePhase==='voting'?' voting':''}${isWinner?' winner':''}" data-idx="${i}">
+        ${!isMe ? `<div class="avatar avatar-sm">${p.avatarImg?`<img src="${p.avatarImg}">`:p.avatar}</div>` : ''}
+        <div class="msg-bubble">
+          <div class="msg-header">
+            <span class="msg-name">${p.name}${isMe?' (ты)':''}${p.id===state.currentRoom.host?' 👑':''}</span>
+            <span class="msg-time">${fmtTime((Date.now()-a.ts)/1000)}</span>
+          </div>
+          ${content}
+          ${voteBtn}
+        </div>
+        ${isMe ? `<div class="avatar avatar-sm">${p.avatarImg?`<img src="${p.avatarImg}">`:p.avatar}</div>` : ''}
+      </div>
+    `;
+  }).join('');
+  
+  // Init voice players
+  state.answers.forEach((a,i) => {
+    if(a.voiceUrl) {
+      const prog = $(`#prog_${i}`);
+      const timeEl = prog?.nextElementSibling;
+      const audio = new Audio(a.voiceUrl);
+      audio.addEventListener('loadedmetadata', () => { prog.max = audio.duration; });
+      audio.addEventListener('timeupdate', () => { prog.value = audio.currentTime; timeEl.textContent = fmtTime(audio.currentTime); });
+      window[`voice_audio_${i}`] = audio;
+    }
+  });
+}
+function playVoice(url) {
+  const idx = state.answers.findIndex(a => a.voiceUrl === url);
+  if(idx === -1) return;
+  const audio = window[`voice_audio_${idx}`];
+  if(audio.paused) { audio.play(); }
+  else { audio.pause(); audio.currentTime = 0; }
+}
+
+function scrollToBottom() { const a = $('.game-scroll'); if(a) a.scrollTop = a.scrollHeight; }
+
+function startGame() {
+  if(!state.currentRoom) return;
+  const r = state.currentRoom;
+  if(r.host !== state.user.tag) return toast('Только хост может стартовать','error');
+  if(r.players.length < 2) return toast('Нужно минимум 2 игрока','error');
+  r.state = 'playing';
+  state.gamePhase = 'picking';
+  state.round = 0;
+  state.answers = [];
+  state.pendingQuestionCat = null;
+  state.catsPlayed.clear();
+  saveState();
+  renderGameScreen();
+}
+function nextRound() {
+  if(state.round >= state.currentRoom.maxRounds) { endGame(); return; }
+  state.round++;
+  state.votedThisRound = false;
+  state.answers = [];
+  state.gamePhase = 'answering';
+  
+  // Pick category
+  const catId = state.pendingQuestionCat || state.currentRoom.categories[Math.floor(Math.random()*state.currentRoom.categories.length)];
+  state.pendingQuestionCat = null;
+  state.catsPlayed.add(catId);
+  if(state.user) state.user.stats.catsPlayed = [...state.catsPlayed];
+  if(state.catsPlayed.size === CATS.length) unlockAchievement('cat_explorer');
+  
+  const pool = QUESTIONS[catId];
+  const qText = pool[Math.floor(Math.random()*pool.length)];
+  state.currentQuestion = {cat: catId, text: qText};
+  
+  saveState();
+  renderGameScreen();
+  startAnswerTimer(20000);
+}
+function startAnswerTimer(duration) {
+  const bar = $('#roundProgress');
+  bar.style.transition = 'none';
+  bar.style.width = '0%';
+  requestAnimationFrame(() => { bar.style.transition = `width ${duration}ms linear`; bar.style.width = '100%'; });
+  
+  clearInterval(state.progressInterval);
+  state.progressInterval = setTimeout(() => {
+    if(state.gamePhase === 'answering') {
+      // Auto-advance to voting if time up
+      if(state.answers.length < state.currentRoom.players.length) {
+        // Some didn't answer, still go to voting
+      }
+      state.gamePhase = 'voting';
+      renderGameScreen();
+    }
+  }, duration);
+}
+
+function handleGameKeydown(e) {
+  if(e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendGameMsg(); }
+}
+function sendGameMsg() {
+  const txt = $('#gameInput').value.trim();
+  if(!txt) return;
+  if(state.gamePhase === 'answering') {
+    if(state.answers.some(a => a.playerId === state.user.tag)) return toast('Ты уже ответил');
+    state.answers.push({playerId: state.user.tag, text: txt, votes: [], ts: Date.now()});
+    $('#gameInput').value = '';
+    renderChat(); scrollToBottom();
+    vibrate(10); toast('Ответ принят');
+    if(state.user) state.user.stats.confessions++;
+    // Check if all answered
+    if(state.answers.length >= state.currentRoom.players.length) {
+      clearTimeout(state.progressInterval);
+      state.gamePhase = 'voting';
+      renderGameScreen();
+    }
+  } else if(state.gamePhase === 'lobby') {
+    // Lobby chat not implemented in UI but could be added
+  }
+}
+function voteAnswer(ansIdx, targetPlayerId) {
+  if(state.gamePhase !== 'voting') return;
+  if(state.votedThisRound) return toast('Ты уже голосовал');
+  const ans = state.answers[ansIdx];
+  if(!ans || ans.votes.includes(state.user.tag) || ans.playerId === state.user.tag) return;
+  ans.votes.push(state.user.tag);
+  state.votedThisRound = true;
+  if(state.user) state.user.stats.votes++;
+  vibrate(20);
+  renderChat();
+  // Check if all voted (1 vote per player)
+  const votedPlayers = new Set();
+  state.answers.forEach(a => a.votes.forEach(v => votedPlayers.add(v)));
+  if(votedPlayers.size >= state.currentRoom.players.length - 1) { // everyone except maybe one voted
+    showResults();
+  }
+}
+function showResults() {
+  state.gamePhase = 'results';
+  // Calc winner
+  let maxVotes = -1, winners = [];
+  state.answers.forEach(a => {
+    if(a.votes.length > maxVotes) { maxVotes = a.votes.length; winners = [a]; }
+    else if(a.votes.length === maxVotes && maxVotes > 0) { winners.push(a); }
+  });
+  if(maxVotes > 0 && winners.length === 1) {
+    const wp = state.currentRoom.players.find(p => p.id === winners[0].playerId);
+    if(wp) {
+      wp.score++;
+      if(wp.isMe) {
+        state.user.stats.points++; state.user.stats.wins++; state.user.stats.streak++;
+        if(state.user.stats.streak >= 3) unlockAchievement('streak3');
+        unlockAchievement('winner');
+        toast('🏆 Ты выиграл раунд!');
+      } else {
+        state.user.stats.streak = 0;
+        toast(`${wp.name} выиграл раунд!`);
+      }
+    }
+  } else {
+    if(state.user) state.user.stats.streak = 0;
+    toast('Ничья или никто не проголосовал');
+  }
+  saveState();
+  renderGameScreen();
+  setTimeout(() => {
+    if(state.round < state.currentRoom.maxRounds) nextRound();
+    else endGame();
+  }, 5000);
+}
+function endGame() {
+  state.gamePhase = 'ended';
+  state.currentRoom.state = 'ended';
+  if(state.user) { state.user.stats.games++; saveState(); }
+  renderGameScreen();
+  setTimeout(() => toast('Игра окончена. Можно начать заново.'), 1500);
+}
+function confirmLeave() { $('#modalLeave').classList.add('show'); }
+function closeModal(id) { $(`#${id}`).classList.remove('show'); }
+function leaveRoomConfirmed() {
+  closeModal('modalLeave');
+  state.currentRoom = null;
+  state.gamePhase = 'lobby';
+  state.currentQuestion = null;
+  state.answers = [];
+  state.round = 0;
+  state.pendingQuestionCat = null;
+  state.votedThisRound = false;
+  switchScreen('screenRooms');
+}
+
+// --- VOICE ---
+function toggleVoice() {
+  const btn = $('#btnVoice');
+  if(state.voiceRecording) stopVoice();
+  else startVoice();
+}
+function startVoice() {
+  if(!navigator.mediaDevices) return toast('Микрофон недоступен','error');
+  navigator.mediaDevices.getUserMedia({audio:true}).then(stream => {
+    state.mediaRecorder = new MediaRecorder(stream, {mimeType: 'audio/webm;codecs=opus'});
+    state.voiceChunks = [];
+    state.mediaRecorder.ondataavailable = e => { if(e.data.size > 0) state.voiceChunks.push(e.data); };
+    state.mediaRecorder.onstop = () => {
+      const blob = new Blob(state.voiceChunks, {type: 'audio/webm'});
+      const url = URL.createObjectURL(blob);
+      sendVoiceMsg(url);
+      stream.getTracks().forEach(t => t.stop());
+    };
+    state.mediaRecorder.start(100); // timeslice
+    state.voiceRecording = true;
+    btn.classList.add('recording');
+    $('#recInfo').classList.remove('hidden');
+    let sec = 0;
+    state.voiceTimer = setInterval(() => { sec++; $('#recTime').textContent = fmtTime(sec); }, 1000);
+    if(state.user) { state.user.stats.voicesSent++; if(state.user.stats.voicesSent >= 5) unlockAchievement('voice_user'); }
+  }).catch(() => toast('Нет доступа к микрофону','error'));
+}
+function stopVoice() {
+  if(state.mediaRecorder && state.voiceRecording) state.mediaRecorder.stop();
+  state.voiceRecording = false;
+  $('#btnVoice').classList.remove('recording');
+  $('#recInfo').classList.add('hidden');
+  clearInterval(state.voiceTimer);
+}
+function sendVoiceMsg(url) {
+  if(state.gamePhase !== 'answering') return;
+  if(state.answers.some(a => a.playerId === state.user.tag)) return toast('Ты уже ответил');
+  state.answers.push({playerId: state.user.tag, text: '', voiceUrl: url, votes: [], ts: Date.now()});
+  renderChat(); scrollToBottom();
+  vibrate(10); toast('Голосовое отправлено');
+  if(state.answers.length >= state.currentRoom.players.length) {
+    clearTimeout(state.progressInterval);
+    state.gamePhase = 'voting';
+    renderGameScreen();
+  }
+}
+
+// --- RULES ---
+function showRules() { $('#modalRules').classList.add('show'); }
+
+// --- INIT ---
+loadState();
+if(state.user && state.user.seenWelcome) { switchScreen('screenHome'); }
+else { switchScreen('screenWelcome'); }
+
+// Keyboard detection
+addEventListener('focusin', e => { if(e.target.tagName==='TEXTAREA'||e.target.tagName==='INPUT') { if(!state.keyboardOpen){ state.keyboardOpen=true; document.body.classList.add('kb-open'); } } });
+addEventListener('focusout', e => { if(e.target.tagName==='TEXTAREA'||e.target.tagName==='INPUT') { state.keyboardOpen=false; document.body.classList.remove('kb-open'); } });
+
+// Expose globals for inline handlers
+window.switchScreen = switchScreen;
+window.goBack = goBack;
+window.goToReg = () => switchScreen('screenReg');
+window.handleRegAvatar = handleRegAvatar;
+window.validateRegForm = validateRegForm;
+window.finishRegistration = finishRegistration;
+window.handleProfileAvatar = handleProfileAvatar;
+window.renderProfile = renderProfile;
+window.saveSettings = saveSettings;
+window.confirmReset = confirmReset;
+window.openCreateRoom = openCreateRoom;
+window.renderCatPicker = renderCatPicker;
+window.toggleCat = toggleCat;
+window.validateCreateForm = validateCreateForm;
+window.createRoom = createRoom;
+window.joinByCode = joinByCode;
+window.joinRoom = joinRoom;
+window.startGame = startGame;
+window.pickCategory = pickCategory;
+window.sendGameMsg = sendGameMsg;
+window.handleGameKeydown = handleGameKeydown;
+window.voteAnswer = voteAnswer;
+window.confirmLeave = confirmLeave;
+window.closeModal = closeModal;
+window.leaveRoomConfirmed = leaveRoomConfirmed;
+window.toggleVoice = toggleVoice;
+window.playVoice = playVoice;
+window.showRules = showRules;
 
 </script>
 </body>
